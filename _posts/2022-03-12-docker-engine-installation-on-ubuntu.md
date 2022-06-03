@@ -84,7 +84,7 @@ $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev
 Docker 引擎已安装并正在运行。该`docker组`已创建，但未向其中添加任何用户。您需要使用sudo来运行 Docker 命令。继续Linux 后安装以允许非特权用户运行 Docker 命令和其他可选配置步骤。
 
 ### 升级 Docker 引擎
-要升级 Docker Engine，首先运行sudo apt-get update，然后按照 [安装说明]({{post_url}}#使用存储库安装)，选择您要安装的新版本。
+要升级 Docker Engine，首先运行sudo apt-get update，然后按照 [安装说明]({% post_url 2022-03-12-docker-engine-installation-on-ubuntu %}#使用存储库安装)，选择您要安装的新版本。
 
 
 # 卸载 Docker 引擎

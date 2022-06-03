@@ -121,7 +121,7 @@ public class ReferenceFindTest {
 - 内存比新生代也大很多(大概比例是1:2)，当老年代内存满时触发Major GC即Full GC，Full GC发生频率比较低，老年代对象存活时间比较长，存活率标记高。
 
 ### 持久代（Permanent Generation）的回收算法
-用于存放静态文件，如Java类、方法等。持久代对垃圾回收没有显著影响，但是有些应用可能动态生成或者调用一些class，例如Hibernate 等，在这种时候需要设置一个比较大的持久代空间来存放这些运行过程中新增的类。持久代也称方法区，具体的回收可参见上文[方法区如何判断是否需要回收]({{post-url}}#方法区如何判断是否需要回收)。
+用于存放静态文件，如Java类、方法等。持久代对垃圾回收没有显著影响，但是有些应用可能动态生成或者调用一些class，例如Hibernate 等，在这种时候需要设置一个比较大的持久代空间来存放这些运行过程中新增的类。持久代也称方法区，具体的回收可参见上文[方法区如何判断是否需要回收]({% post_url 2022-01-17-jvm-gc-mechanism %}#方法区如何判断是否需要回收)。
 
 # 常见的垃圾收集器
 常见的垃圾收集器 下面一张图是HotSpot虚拟机包含的所有收集器
@@ -141,7 +141,7 @@ public class ReferenceFindTest {
 - CMS(Concurrent Mark Sweep)收集器（标记-清理算法）
   高并发、低停顿，追求最短GC回收停顿时间，cpu占用比较高，响应时间快，停顿时间短，多核cpu 追求高响应时间的选择。
 
-垃圾回收器详情： [7种 JVM 垃圾回收器概览]({{ psot_url 2022-01-18-7-kinds-of-jvm-garbage-collectors-overview }})
+垃圾回收器详情： [7种 JVM 垃圾回收器概览]({% post_url 2022-01-18-7-kinds-of-jvm-garbage-collectors-overview %})
 
 # GC是什么时候触发的
 由于对象进行了分代处理，因此垃圾回收区域、时间也不一样。GC有两种类型：Scavenge GC和Full GC。
