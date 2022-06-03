@@ -136,7 +136,7 @@ void testCreateFile5() throws IOException {
 2. Files.lines, 返回Stream(Java 流式数据处理，按行读取)
 3. Files.readAllLines, 返回List\<String\>
 4. Files.readString, 读取String(Java 11), 文件最大 2G.
-5. Files.readAllBytes, 读取byte[](Java 7), 文件最大 2G.
+5. Files.readAllBytes, 读取byte\[\](Java 7), 文件最大 2G.
 6. BufferedReader, 经典方式 (Java 1.1 -> forever)
 
 ## Scanner
