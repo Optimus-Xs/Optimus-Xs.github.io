@@ -8,7 +8,7 @@ order: 4
 
 I'm a Backend Programmer, Tech Enthusiast and Homelab Player
 
-- 📖 My Bolg [Optimus-Xs' Blog](https://Oprimus-Xs.github.io)
+- 📖 My Bolg [Optimus-Xs' Blog](https://Optimus-Xs.github.io)
 
 - ⌨ My Dev Tech Stack 
 [![](https://img.shields.io/badge/Java-SpringBoot-green)]() 
