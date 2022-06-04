@@ -29,7 +29,7 @@ description: >-                        # used by seo meta and the atom feed
   A programmer & geek's blog, update some funny project logs and dev tech articles irregularly
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
-url: 'https://Oprimus-Xs.github.io'
+url: 'https://Optimus-Xs.github.io'
 
 github:
   username: Optimus-Xs             # change to your github username
@@ -50,7 +50,7 @@ social:
     # - https://www.facebook.com/username
     # - https://www.linkedin.com/in/username
 
-google_site_verification:               # fill in to your verification string
+google_site_verification: VWHcsZQRCRLxZT171OOZpP1emj_N4gMlSvgq8UReWz4 # fill in to your verification string
 
 # ↑ --------------------------
 # The end of `jekyll-seo-tag` settings
