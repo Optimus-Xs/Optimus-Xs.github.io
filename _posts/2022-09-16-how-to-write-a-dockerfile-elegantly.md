@@ -216,12 +216,12 @@ ENV MY_NAME="John Doe" MY_DOG=Rex\ The\ Dog \
 
 >注意
 >
->可以在容器运行时指定环境变量，替换镜像中的已有变量，docker run --env <key>=<value>。
+>可以在容器运行时指定环境变量，替换镜像中的已有变量，docker run --env \<key\>=\<value\>。
 > 
->使用ENV可能会对后续的Dockerfile指令造成影响，如果只需要对一条指令设置环境变量，可以使用这种方式：RUN <key>=<value> <command>
+>使用ENV可能会对后续的Dockerfile指令造成影响，如果只需要对一条指令设置环境变量，可以使用这种方式：RUN \<key\>=\<value\> \<command\>
 {: .prompt-info }
 
->ENV当容器从生成的图像运行时，使用的环境变量设置将持续存在。您可以使用 查看值docker inspect，并使用 更改它们docker run --env <key>=<value>。
+>ENV当容器从生成的图像运行时，使用的环境变量设置将持续存在。您可以使用 查看值docker inspect，并使用 更改它们docker run --env \<key\>=\<value\>。
 {: .prompt-info }
 
 如果环境变量只在构建期间需要，而不是在最终图像中，请考虑为单个命令设置一个值：
