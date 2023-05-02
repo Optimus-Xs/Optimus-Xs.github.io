@@ -213,7 +213,7 @@ docker推荐使用第二种，因为可以在一行中写多个环境变量，�
 ENV MY_NAME="John Doe" MY_DOG=Rex\ The\ Dog \
     MY_CAT=fluffy
 ```
->
+
 >注意
 >
 >可以在容器运行时指定环境变量，替换镜像中的已有变量，docker run --env <key>=<value>。
