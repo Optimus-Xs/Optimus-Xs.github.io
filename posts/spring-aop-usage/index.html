@@ -1,0 +1,317 @@
+<!DOCTYPE html><html lang="zh-CN" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="prefer-datetime-locale" content="zh-cn"><meta name="generator" content="Jekyll v4.2.2" /><meta property="og:title" content="Spring AOP 的使用方法" /><meta property="og:locale" content="zh_CN" /><meta name="description" content="Spring AOP 注解概述 Spring 的 AOP 功能除了在配置文件中配置一大堆的配置，比如切入点、表达式、通知等等以外，使用注解的方式更为方便快捷，特别是 Spring boot 出现以后，基本不再使用原先的 beans.xml 等配置文件了，而都推荐注解编程。" /><meta property="og:description" content="Spring AOP 注解概述 Spring 的 AOP 功能除了在配置文件中配置一大堆的配置，比如切入点、表达式、通知等等以外，使用注解的方式更为方便快捷，特别是 Spring boot 出现以后，基本不再使用原先的 beans.xml 等配置文件了，而都推荐注解编程。" /><link rel="canonical" href="https://optimus-xs.github.io/posts/spring-aop-usage/" /><meta property="og:url" content="https://optimus-xs.github.io/posts/spring-aop-usage/" /><meta property="og:site_name" content="Optimus-Xs’ Blog" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2021-03-05T18:19:00+08:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="Spring AOP 的使用方法" /><meta name="twitter:site" content="@twitter_username" /><meta name="google-site-verification" content="VWHcsZQRCRLxZT171OOZpP1emj_N4gMlSvgq8UReWz4" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-03-05T18:19:00+08:00","datePublished":"2021-03-05T18:19:00+08:00","description":"Spring AOP 注解概述 Spring 的 AOP 功能除了在配置文件中配置一大堆的配置，比如切入点、表达式、通知等等以外，使用注解的方式更为方便快捷，特别是 Spring boot 出现以后，基本不再使用原先的 beans.xml 等配置文件了，而都推荐注解编程。","headline":"Spring AOP 的使用方法","mainEntityOfPage":{"@type":"WebPage","@id":"https://optimus-xs.github.io/posts/spring-aop-usage/"},"url":"https://optimus-xs.github.io/posts/spring-aop-usage/"}</script><title>Spring AOP 的使用方法 | Optimus-Xs' Blog</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Optimus-Xs' Blog"><meta name="application-name" content="Optimus-Xs' Blog"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://cdn.jsdelivr.net" ><link rel="dns-prefetch" href="https://cdn.jsdelivr.net" ><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get MODE_ATTR() { return "data-mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } static get ID() { return "mode-toggle"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } let self = this; /* always follow the system prefers */ this.sysDarkPrefers.addEventListener("change", () => { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.notify(); }); } /* constructor() */ get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode === ModeToggle.DARK_MODE; } get isLightMode() { return this.mode === ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer)) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } setDark() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_ATTR); sessionStorage.removeItem(ModeToggle.MODE_KEY); } /* Notify another plugins that the theme mode has changed */ notify() { window.postMessage({ direction: ModeToggle.ID, message: this.modeStatus }, "*"); } } /* ModeToggle */ const toggle = new ModeToggle(); function flipMode() { if (toggle.hasMode) { if (toggle.isSysDarkPrefer) { if (toggle.isLightMode) { toggle.clearMode(); } else { toggle.setLight(); } } else { if (toggle.isDarkMode) { toggle.clearMode(); } else { toggle.setDark(); } } } else { if (toggle.isSysDarkPrefer) { toggle.setLight(); } else { toggle.setDark(); } } toggle.notify(); } /* flipMode() */ </script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src=" /assets/img/miTu.jpg " alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Optimus-Xs' Blog</a></div><div class="site-subtitle font-italic">「Think Different」</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>首页</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>分类</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>标签</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>归档</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i> <span>关于</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <button class="mode-toggle btn" aria-label="Switch Mode"> <i class="fas fa-adjust"></i> </button> <span class="icon-border"></span> <a href="https://github.com/Optimus-Xs" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['Wenlong.Zuo','outlook.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="fas fa-rss"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> 首页 </a> </span> <span>Spring AOP 的使用方法</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> 文章</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="搜索..."> </span> <span id="search-cancel" >取消</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Spring AOP 的使用方法</h1><div class="post-meta text-muted"><div> 作者 <em> <a href="https://github.com/Optimus-Xs">Optimus-Xs</a> </em></div><div class="d-flex"><div> <span> 发表于 <em class="timeago" data-ts="1614939540" data-toggle="tooltip" data-placement="bottom" data-tooltip-df="llll" > 2021-03-05 </em> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="2939 字"> <em>16 分钟</em>阅读</span></div></div></div><div class="post-content"><h1 id="spring-aop-注解概述">Spring AOP 注解概述</h1><p>Spring 的 AOP 功能除了在配置文件中配置一大堆的配置，比如切入点、表达式、通知等等以外，使用注解的方式更为方便快捷，特别是 Spring boot 出现以后，基本不再使用原先的 beans.xml 等配置文件了，而都推荐注解编程。</p><div class="table-wrapper"><table><thead><tr><th style="text-align: left">注解<th style="text-align: left">功能<tbody><tr><td style="text-align: left">@Aspect<td style="text-align: left">切面声明，标注在类、接口（包括注解类型）或枚举上。<tr><td style="text-align: left">@Pointcut<td style="text-align: left">切入点声明，即切入到哪些目标类的目标方法。value 属性指定切入点表达式，<br />默认为 ““，用于被通知注解引用，样通知注解只需要关联此切入点声明即可，<br />无需再重复写切入点表达式<tr><td style="text-align: left">@Before<td style="text-align: left">前置通知, 在目标方法(切入点)执行之前执行。<br />value 属性绑定通知的切入点表达式，可以关联切入点声明，<br />也可以直接设置切入点表达式注意：如果在此回调方法中抛出异常，<br />则目标方法不会再执行，会继续执行后置通知 -&gt; 异常通知。<tr><td style="text-align: left">@After<td style="text-align: left">后置通知, 在目标方法(切入点)执行之后执行<tr><td style="text-align: left">@AfterReturning<td style="text-align: left">返回通知, 在目标方法(切入点)返回结果之后执行，<br />在 @After 的后面执行pointcut 属性绑定通知的切入点表达式，<br />优先级高于 value，默认为 “”<tr><td style="text-align: left">@AfterThrowing<td style="text-align: left">异常通知, 在方法抛出异常之后执行, <br />意味着跳过返回通知pointcut 属性绑定通知的切入点表达式，<br />优先级高于 value，默认为 ““<br />注意：如果目标方法自己 try-catch 了异常，<br />而没有继续往外抛，则不会进入此回调函数<tr><td style="text-align: left">@Around<td style="text-align: left">环绕通知：目标方法执行前后分别执行一些代码，类似拦截器，<br />可以控制目标方法是否继续执行。通常用于统计方法耗时，参数校验等等操作。<br />环绕通知早于前置通知，晚于返回通知。</table></div><blockquote class="prompt-tip"><div><p>对于习惯了 Spring 全家桶编程的人来说，并不是需要直接引入 aspectjweaver 依赖，因为 spring-boot-starter-aop 组件默认已经引用了 aspectjweaver 来实现 AOP 功能。换句话说 Spring 的 AOP 功能就是依赖的 aspectjweaver ！</p></div></blockquote><div class="language-xml highlighter-rouge"><div class="code-header"> <span data-label-text="XML"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-aop<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>2.1.4.RELEASE<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</pre></table></code></div></div><h1 id="aspect-快速入门">@Aspect 快速入门</h1><p>@Aspect 常见用于记录日志、异常集中处理、权限验证、Web 参数校验、事务处理等等</p><p>要想把一个类变成切面类，只需3步：</p><ol><li>在类上使用 @Aspect 注解使之成为切面类<li>切面类需要交由 Sprign 容器管理，所以类上还需要有 @Service、@Repository、@Controller、@Component 等注解<li>在切面类中自定义方法接收通知</ol><div class="language-java highlighter-rouge"><div class="code-header"> <span data-label-text="Java"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+</pre><td class="rouge-code"><pre>
+<span class="cm">/**
+ * 1、@Aspect：声明本类为切面类
+ * 2、@Component：将本类交由 Spring 容器管理
+ * 3、@Order：指定切入执行顺序，数值越小，切面执行顺序越靠前，默认为 Integer.MAX_VALUE
+ */</span>
+<span class="nd">@Aspect</span>
+<span class="nd">@Order</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="mi">999</span><span class="o">)</span>
+<span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AspectHelloWorld</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="nc">Logger</span> <span class="no">LOG</span> <span class="o">=</span> <span class="nc">LoggerFactory</span><span class="o">.</span><span class="na">getLogger</span><span class="o">(</span><span class="nc">AspectHelloWorld</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+ 
+    <span class="cm">/**
+     * @Pointcut ：切入点声明，即切入到哪些目标方法。value 属性指定切入点表达式，默认为 ""。
+     * 用于被下面的通知注解引用，这样通知注解只需要关联此切入点声明即可，无需再重复写切入点表达式
+     * &lt;p&gt;
+     * 切入点表达式常用格式举例如下：
+     * - * com.wmx.aspect.EmpService.*(..))：表示 com.wmx.aspect.EmpService 类中的任意方法
+     * - * com.wmx.aspect.*.*(..))：表示 com.wmx.aspect 包(不含子包)下任意类中的任意方法
+     * - * com.wmx.aspect..*.*(..))：表示 com.wmx.aspect 包及其子包下任意类中的任意方法
+     * &lt;/p&gt;
+     * value 的 execution 可以有多个，使用 || 隔开.
+     */</span>
+    <span class="nd">@Pointcut</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span>
+            <span class="s">"execution(* com.wmx.hb.controller.DeptController.*(..)) "</span> <span class="o">+</span>
+                    <span class="s">"|| execution(* com.wmx.hb.controller.EmpController.*(..))"</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">aspectPointcut</span><span class="o">()</span> <span class="o">{</span>
+ 
+    <span class="o">}</span>
+ 
+    <span class="cm">/**
+     * 前置通知：目标方法执行之前执行以下方法体的内容。
+     * value：绑定通知的切入点表达式。可以关联切入点声明，也可以直接设置切入点表达式
+     * &lt;br/&gt;
+     * * @param joinPoint：提供对连接点处可用状态和有关它的静态信息的反射访问&lt;br/&gt; &lt;p&gt;
+     * * * Object[] getArgs()：返回此连接点处（目标方法）的参数，目标方法无参数时，返回空数组
+     * * * Signature getSignature()：返回连接点处的签名。
+     * * * Object getTarget()：返回目标对象
+     * * * Object getThis()：返回当前正在执行的对象
+     * * * StaticPart getStaticPart()：返回一个封装此连接点的静态部分的对象。
+     * * * SourceLocation getSourceLocation()：返回与连接点对应的源位置
+     * * * String toLongString()：返回连接点的扩展字符串表示形式。
+     * * * String toShortString()：返回连接点的缩写字符串表示形式。
+     * * * String getKind()：返回表示连接点类型的字符串
+     * * * &lt;/p&gt;
+     */</span>
+    <span class="nd">@Before</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"aspectPointcut()"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">aspectBefore</span><span class="o">(</span><span class="nc">JoinPoint</span> <span class="n">joinPoint</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Object</span><span class="o">[]</span> <span class="n">args</span> <span class="o">=</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">getArgs</span><span class="o">();</span>
+        <span class="nc">Signature</span> <span class="n">signature</span> <span class="o">=</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">getSignature</span><span class="o">();</span>
+        <span class="nc">Object</span> <span class="n">target</span> <span class="o">=</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">getTarget</span><span class="o">();</span>
+        <span class="nc">Object</span> <span class="n">aThis</span> <span class="o">=</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">getThis</span><span class="o">();</span>
+        <span class="nc">JoinPoint</span><span class="o">.</span><span class="na">StaticPart</span> <span class="n">staticPart</span> <span class="o">=</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">getStaticPart</span><span class="o">();</span>
+        <span class="nc">SourceLocation</span> <span class="n">sourceLocation</span> <span class="o">=</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">getSourceLocation</span><span class="o">();</span>
+        <span class="nc">String</span> <span class="n">longString</span> <span class="o">=</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">toLongString</span><span class="o">();</span>
+        <span class="nc">String</span> <span class="n">shortString</span> <span class="o">=</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">toShortString</span><span class="o">();</span>
+ 
+        <span class="no">LOG</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"【前置通知】"</span> <span class="o">+</span>
+                        <span class="s">"args={},signature={},target={},aThis={},staticPart={},"</span> <span class="o">+</span>
+                        <span class="s">"sourceLocation={},longString={},shortString={}"</span>
+                <span class="o">,</span> <span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">args</span><span class="o">),</span> <span class="n">signature</span><span class="o">,</span> <span class="n">target</span><span class="o">,</span> <span class="n">aThis</span><span class="o">,</span> <span class="n">staticPart</span><span class="o">,</span> <span class="n">sourceLocation</span><span class="o">,</span> <span class="n">longString</span><span class="o">,</span> <span class="n">shortString</span><span class="o">);</span>
+    <span class="o">}</span>
+ 
+    <span class="cm">/**
+     * 后置通知：目标方法执行之后执行以下方法体的内容，不管目标方法是否发生异常。
+     * value：绑定通知的切入点表达式。可以关联切入点声明，也可以直接设置切入点表达式
+     */</span>
+    <span class="nd">@After</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"aspectPointcut()"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">aspectAfter</span><span class="o">(</span><span class="nc">JoinPoint</span> <span class="n">joinPoint</span><span class="o">)</span> <span class="o">{</span>
+        <span class="no">LOG</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"【后置通知】kind={}"</span><span class="o">,</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">getKind</span><span class="o">());</span>
+    <span class="o">}</span>
+ 
+    <span class="cm">/**
+     * 返回通知：目标方法返回后执行以下代码
+     * value 属性：绑定通知的切入点表达式。可以关联切入点声明，也可以直接设置切入点表达式
+     * pointcut 属性：绑定通知的切入点表达式，优先级高于 value，默认为 ""
+     * returning 属性：通知签名中要将返回值绑定到的参数的名称，默认为 ""
+     *
+     * @param joinPoint ：提供对连接点处可用状态和有关它的静态信息的反射访问
+     * @param result    ：目标方法返回的值，参数名称与 returning 属性值一致。无返回值时，这里 result 会为 null.
+     */</span>
+    <span class="nd">@AfterReturning</span><span class="o">(</span><span class="n">pointcut</span> <span class="o">=</span> <span class="s">"aspectPointcut()"</span><span class="o">,</span> <span class="n">returning</span> <span class="o">=</span> <span class="s">"result"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">aspectAfterReturning</span><span class="o">(</span><span class="nc">JoinPoint</span> <span class="n">joinPoint</span><span class="o">,</span> <span class="nc">Object</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+        <span class="no">LOG</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"【返回通知】,shortString={},result="</span><span class="o">,</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">toShortString</span><span class="o">(),</span> <span class="n">result</span><span class="o">);</span>
+    <span class="o">}</span>
+ 
+    <span class="cm">/**
+     * 异常通知：目标方法发生异常的时候执行以下代码，此时返回通知不会再触发
+     * value 属性：绑定通知的切入点表达式。可以关联切入点声明，也可以直接设置切入点表达式
+     * pointcut 属性：绑定通知的切入点表达式，优先级高于 value，默认为 ""
+     * throwing 属性：与方法中的异常参数名称一致，
+     *
+     * @param ex：捕获的异常对象，名称与 throwing 属性值一致
+     */</span>
+    <span class="nd">@AfterThrowing</span><span class="o">(</span><span class="n">pointcut</span> <span class="o">=</span> <span class="s">"aspectPointcut()"</span><span class="o">,</span> <span class="n">throwing</span> <span class="o">=</span> <span class="s">"ex"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">aspectAfterThrowing</span><span class="o">(</span><span class="nc">JoinPoint</span> <span class="n">jp</span><span class="o">,</span> <span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">methodName</span> <span class="o">=</span> <span class="n">jp</span><span class="o">.</span><span class="na">getSignature</span><span class="o">().</span><span class="na">getName</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">ex</span> <span class="k">instanceof</span> <span class="nc">ArithmeticException</span><span class="o">)</span> <span class="o">{</span>
+            <span class="no">LOG</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"【异常通知】"</span> <span class="o">+</span> <span class="n">methodName</span> <span class="o">+</span> <span class="s">"方法算术异常（ArithmeticException）："</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="no">LOG</span><span class="o">.</span><span class="na">error</span><span class="o">(</span><span class="s">"【异常通知】"</span> <span class="o">+</span> <span class="n">methodName</span> <span class="o">+</span> <span class="s">"方法异常："</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+ 
+    <span class="cm">/**
+     * 环绕通知
+     * 1、@Around 的 value 属性：绑定通知的切入点表达式。可以关联切入点声明，也可以直接设置切入点表达式
+     * 2、Object ProceedingJoinPoint.proceed(Object[] args) 方法：继续下一个通知或目标方法调用，返回处理结果，如果目标方法发生异常，则 proceed 会抛异常.
+     * 3、假如目标方法是控制层接口，则本方法的异常捕获与否都不会影响目标方法的事务回滚
+     * 4、假如目标方法是控制层接口，本方法 try-catch 了异常后没有继续往外抛，则全局异常处理 @RestControllerAdvice 中不会再触发
+     *
+     * @param joinPoint
+     * @return
+     * @throws Throwable
+     */</span>
+    <span class="nd">@Around</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"aspectPointcut()"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">handleControllerMethod</span><span class="o">(</span><span class="nc">ProceedingJoinPoint</span> <span class="n">joinPoint</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Throwable</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">checkRequestParam</span><span class="o">(</span><span class="n">joinPoint</span><span class="o">);</span>
+ 
+        <span class="nc">StopWatch</span> <span class="n">stopWatch</span> <span class="o">=</span> <span class="nc">StopWatch</span><span class="o">.</span><span class="na">createStarted</span><span class="o">();</span>
+        <span class="no">LOG</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"【环绕通知】执行接口开始，方法={}，参数={} "</span><span class="o">,</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">getSignature</span><span class="o">(),</span> <span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">joinPoint</span><span class="o">.</span><span class="na">getArgs</span><span class="o">()).</span><span class="na">toString</span><span class="o">());</span>
+        <span class="c1">//继续下一个通知或目标方法调用，返回处理结果，如果目标方法发生异常，则 proceed 会抛异常.</span>
+        <span class="c1">//如果在调用目标方法或者下一个切面通知前抛出异常，则不会再继续往后走.</span>
+        <span class="nc">Object</span> <span class="n">proceed</span> <span class="o">=</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">proceed</span><span class="o">(</span><span class="n">joinPoint</span><span class="o">.</span><span class="na">getArgs</span><span class="o">());</span>
+ 
+        <span class="n">stopWatch</span><span class="o">.</span><span class="na">stop</span><span class="o">();</span>
+        <span class="kt">long</span> <span class="n">watchTime</span> <span class="o">=</span> <span class="n">stopWatch</span><span class="o">.</span><span class="na">getTime</span><span class="o">();</span>
+        <span class="no">LOG</span><span class="o">.</span><span class="na">debug</span><span class="o">(</span><span class="s">"【环绕通知】执行接口结束，方法={}, 返回值={},耗时={} (毫秒)"</span><span class="o">,</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">getSignature</span><span class="o">(),</span> <span class="n">proceed</span><span class="o">,</span> <span class="n">watchTime</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">proceed</span><span class="o">;</span>
+    <span class="o">}</span>
+ 
+    <span class="cm">/**
+     * 参数校验，防止 SQL 注入
+     *
+     * @param joinPoint
+     */</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">checkRequestParam</span><span class="o">(</span><span class="nc">ProceedingJoinPoint</span> <span class="n">joinPoint</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Object</span><span class="o">[]</span> <span class="n">args</span> <span class="o">=</span> <span class="n">joinPoint</span><span class="o">.</span><span class="na">getArgs</span><span class="o">();</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">args</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">args</span><span class="o">.</span><span class="na">length</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="nc">String</span> <span class="n">params</span> <span class="o">=</span> <span class="nc">Arrays</span><span class="o">.</span><span class="na">toString</span><span class="o">(</span><span class="n">joinPoint</span><span class="o">.</span><span class="na">getArgs</span><span class="o">()).</span><span class="na">toUpperCase</span><span class="o">();</span>
+        <span class="nc">String</span><span class="o">[]</span> <span class="n">keywords</span> <span class="o">=</span> <span class="o">{</span><span class="s">"DELETE "</span><span class="o">,</span> <span class="s">"UPDATE "</span><span class="o">,</span> <span class="s">"SELECT "</span><span class="o">,</span> <span class="s">"INSERT "</span><span class="o">,</span> <span class="s">"SET "</span><span class="o">,</span> <span class="s">"SUBSTR("</span><span class="o">,</span> <span class="s">"COUNT("</span><span class="o">,</span> <span class="s">"DROP "</span><span class="o">,</span>
+                <span class="s">"TRUNCATE "</span><span class="o">,</span> <span class="s">"INTO "</span><span class="o">,</span> <span class="s">"DECLARE "</span><span class="o">,</span> <span class="s">"EXEC "</span><span class="o">,</span> <span class="s">"EXECUTE "</span><span class="o">,</span> <span class="s">" AND "</span><span class="o">,</span> <span class="s">" OR "</span><span class="o">,</span> <span class="s">"--"</span><span class="o">};</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="n">keyword</span> <span class="o">:</span> <span class="n">keywords</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">params</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="n">keyword</span><span class="o">))</span> <span class="o">{</span>
+                <span class="no">LOG</span><span class="o">.</span><span class="na">warn</span><span class="o">(</span><span class="s">"参数存在SQL注入风险，其中包含非法字符 {}."</span><span class="o">,</span> <span class="n">keyword</span><span class="o">);</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nf">RuntimeException</span><span class="o">(</span><span class="s">"参数存在SQL注入风险：params="</span> <span class="o">+</span> <span class="n">params</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></table></code></div></div><h1 id="execution-切点表达式">execution 切点表达式</h1><p>@Pointcut 切入点声明注解，以及所有的通知注解都可以通过 value 属性或者 pointcut 属性指定切入点表达式。</p><p>2、切入点表达式通过 execution 函数匹配连接点，语法：execution([方法修饰符] 返回类型 包名.类名.方法名(参数类型) [异常类型])</p><ul><li>访问修饰符可以省略；<li>返回值类型、包名、类名、方法名可以使用星号*代表任意；<li>包名与类名之间一个点.代表当前包下的类，两个点..表示当前包及其子包下的类;<li>参数列表可以使用两个点..表示任意个数，任意类型的参数列表;</ul><p>3、切入点表达式的写法比较灵活，比如：* 号表示任意一个，.. 表示任意多个，还可以使用 &amp;&amp;、||、! 进行逻辑运算，不过实际开发中通常用不到那么多花里胡哨的，掌握以下几种就基本够用了。</p><h2 id="切入点表达式常用举例"><span class="mr-2">切入点表达式常用举例</span><a href="#切入点表达式常用举例" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h2></h2><div class="table-wrapper"><table><tbody><tr><td>execution(* com.wmx.aspect.EmpServiceImpl.findEmpById(Integer))<td>匹配 com.wmx.aspect.EmpService 类中的 findEmpById 方法，且带有一个 Integer 类型参数。<tr><td>execution(* com.wmx.aspect.EmpServiceImpl.findEmpById(*))<td>匹配 com.wmx.aspect.EmpService 类中的 findEmpById 方法，且带有一个任意类型参数。<tr><td>execution(* com.wmx.aspect.EmpServiceImpl.findEmpById(..))<td>匹配 com.wmx.aspect.EmpService 类中的 findEmpById 方法，参数不限。<tr><td>execution(* grp.basic3.se.service.SEBasAgencyService3.editAgencyInfo(..)) || <br /> execution(* grp.basic3.se.service.SEBasAgencyService3.adjustAgencyInfo(..))<td>匹配 editAgencyInfo 方法或者 adjustAgencyInfo 方法<tr><td>execution(* com.wmx.aspect.EmpService.*(..))<td>匹配 com.wmx.aspect.EmpService 类中的任意方法<tr><td>execution(* com.wmx.aspect.*.*(..))<td>匹配 com.wmx.aspect 包(不含子包)下任意类中的任意方法<tr><td>execution(* com.wmx.aspect..*.*(..))<td>匹配 com.wmx.aspect 包及其子包下任意类中的任意方法<tr><td>execution(* grp.pm..*Controller.*(..))<td>匹配 grp.pm 包下任意子孙包中以 “Controller” 结尾的类中的所有方法</table></div><p>完整 Spring AOP 切点表达式： <a href="/posts/spring-aop-pointcut-designators/">Spring AOP 的切点表达式</a></p></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/software-development/'>Software Development</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/java/" class="post-tag no-text-decoration" >Java</a> <a href="/tags/spring/" class="post-tag no-text-decoration" >Spring</a> <a href="/tags/devdairy/" class="post-tag no-text-decoration" >DevDairy</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> 本文由作者按照 <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> 进行授权</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">分享</span> <span class="share-icons"> <a href="https://t.me/share/url?url=https://optimus-xs.github.io/posts/spring-aop-usage/&amp;text=Spring AOP 的使用方法 - Optimus-Xs&#39; Blog" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://optimus-xs.github.io/posts/spring-aop-usage/" data-toggle="tooltip" data-placement="top" title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin"> <i class="fa-fw fab fa-linkedin"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="分享链接" data-title-succeed="链接已复制！"> </i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">最近更新</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/how-to-write-a-dockerfile-elegantly/">如何优雅的编写Dockerfile</a><li><a href="/posts/java-file-io-usage/">Java 文件 IO 使用方法</a><li><a href="/posts/jvm-gc-mechanism/">JVM 的垃圾回收机制</a><li><a href="/posts/docker-engine-installation-on-ubuntu/">在 Ubuntu 上安装 Dockers Engine 流程</a></ul></div><div id="access-tags"><div class="panel-heading">热门标签</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/java/">Java</a> <a class="post-tag" href="/tags/spring/">Spring</a> <a class="post-tag" href="/tags/devdairy/">DevDairy</a> <a class="post-tag" href="/tags/data-structure/">Data Structure</a> <a class="post-tag" href="/tags/%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/">安装流程</a> <a class="post-tag" href="/tags/geekdairy/">GeekDairy</a> <a class="post-tag" href="/tags/linux/">Linux</a> <a class="post-tag" href="/tags/network/">Network</a> <a class="post-tag" href="/tags/redis/">Redis</a> <a class="post-tag" href="/tags/docker/">Docker</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">文章内容</div><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="tail-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>相关文章</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/why-autowired-not-recommended/"><div class="card-body"> <em class="timeago small" data-ts="1602220140" > 2020-10-09 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>为什么使用 @Autowired 提示不推荐</h3><div class="text-muted small"><p> @Autowired注解相信每个Spring开发者都不陌生了！ 但是当我们使用IDEA写代码的时候，经常会发现@Autowired注解下面是有小黄线的，我们把小鼠标悬停在上面，可以看到这个如下图所示的警告信息： 那么为什么IDEA会给出Field injection is not recommended这样的警告呢？ 下面带着这样的问题，一起来全面的了解下Spring中的三种注入方...</p></div></div></a></div><div class="card"> <a href="/posts/spring-security-usage/"><div class="card-body"> <em class="timeago small" data-ts="1614408060" > 2021-02-27 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>SpringSecurity 使用方法</h3><div class="text-muted small"><p> 简介 Spring Security 是一个相对复杂的安全管理框架，功能比 Shiro 更加强大，权限控制细粒度更高，对 OAuth 2 的支持也更友好。 由于 Spring Security 源自 Spring 家族，因此可以和 Spring 框架无缝整合，特别是 Spring Boot 中提供的自动化配置方案，可以让 Spring Security 的使用更加便捷。 依赖配置 &amp;lt;...</p></div></div></a></div><div class="card"> <a href="/posts/spring-integrate-jwt-auth/"><div class="card-body"> <em class="timeago small" data-ts="1614609960" > 2021-03-01 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>SpringSecurity 集成JWT权限验证</h3><div class="text-muted small"><p> 一般来讲，对于RESTful API都会有认证(Authentication)和授权(Authorization)过程，保证API的安全性。 Authentication指的是确定这个用户的身份，Authorization是确定该用户拥有什么操作权限。 认证方式一般有三种 Basic Authentication 这种方式是直接将用户名和密码放到Header中，使用Autho...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/spring-validation-usage/" class="btn btn-outline-primary" prompt="上一篇"><p>优雅的使用Spring Validation实现业务参数校验</p></a> <a href="/posts/spring-aop-pointcut-designators/" class="btn btn-outline-primary" prompt="下一篇"><p>Spring AOP 的切点表达式</p></a></div></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center text-muted"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://github.com/Optimus-Xs">Optimus-Xs</a>. <span data-toggle="tooltip" data-placement="top" title="除非另有说明，本网站上的博客文章均由作者按照知识共享署名 4.0 国际 (CC BY 4.0) 许可协议进行授权。">保留部分权利。</span></p></div><div class="footer-right"><p class="mb-0"> 本站由 <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> 生成，采用 <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> 主题。</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">热门标签</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/java/">Java</a> <a class="post-tag" href="/tags/spring/">Spring</a> <a class="post-tag" href="/tags/devdairy/">DevDairy</a> <a class="post-tag" href="/tags/data-structure/">Data Structure</a> <a class="post-tag" href="/tags/%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/">安装流程</a> <a class="post-tag" href="/tags/geekdairy/">GeekDairy</a> <a class="post-tag" href="/tags/linux/">Linux</a> <a class="post-tag" href="/tags/network/">Network</a> <a class="post-tag" href="/tags/redis/">Redis</a> <a class="post-tag" href="/tags/docker/">Docker</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">搜索结果为空</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/lozad/dist/lozad.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1/dayjs.min.js,npm/dayjs@1/locale/zh-cn.min.js,npm/dayjs@1/plugin/relativeTime.min.js,npm/dayjs@1/plugin/localizedFormat.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.bundle.min.js"></script> <script defer src="/app.js"></script>

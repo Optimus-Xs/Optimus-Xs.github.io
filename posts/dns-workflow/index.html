@@ -1,0 +1,345 @@
+<!DOCTYPE html><html lang="zh-CN" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="prefer-datetime-locale" content="zh-cn"><meta name="generator" content="Jekyll v4.2.2" /><meta property="og:title" content="DNS 协议解析流程" /><meta property="og:locale" content="zh_CN" /><meta name="description" content="报文分析 例子： 名称服务器 (nameserver) 地址为 192.168.18.135。" /><meta property="og:description" content="报文分析 例子： 名称服务器 (nameserver) 地址为 192.168.18.135。" /><link rel="canonical" href="https://optimus-xs.github.io/posts/dns-workflow/" /><meta property="og:url" content="https://optimus-xs.github.io/posts/dns-workflow/" /><meta property="og:site_name" content="Optimus-Xs’ Blog" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2022-04-19T13:42:00+08:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="DNS 协议解析流程" /><meta name="twitter:site" content="@twitter_username" /><meta name="google-site-verification" content="VWHcsZQRCRLxZT171OOZpP1emj_N4gMlSvgq8UReWz4" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-04-19T13:42:00+08:00","datePublished":"2022-04-19T13:42:00+08:00","description":"报文分析 例子： 名称服务器 (nameserver) 地址为 192.168.18.135。","headline":"DNS 协议解析流程","mainEntityOfPage":{"@type":"WebPage","@id":"https://optimus-xs.github.io/posts/dns-workflow/"},"url":"https://optimus-xs.github.io/posts/dns-workflow/"}</script><title>DNS 协议解析流程 | Optimus-Xs' Blog</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Optimus-Xs' Blog"><meta name="application-name" content="Optimus-Xs' Blog"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://cdn.jsdelivr.net" ><link rel="dns-prefetch" href="https://cdn.jsdelivr.net" ><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script type="text/javascript"> class ModeToggle { static get MODE_KEY() { return "mode"; } static get MODE_ATTR() { return "data-mode"; } static get DARK_MODE() { return "dark"; } static get LIGHT_MODE() { return "light"; } static get ID() { return "mode-toggle"; } constructor() { if (this.hasMode) { if (this.isDarkMode) { if (!this.isSysDarkPrefer) { this.setDark(); } } else { if (this.isSysDarkPrefer) { this.setLight(); } } } let self = this; /* always follow the system prefers */ this.sysDarkPrefers.addEventListener("change", () => { if (self.hasMode) { if (self.isDarkMode) { if (!self.isSysDarkPrefer) { self.setDark(); } } else { if (self.isSysDarkPrefer) { self.setLight(); } } self.clearMode(); } self.notify(); }); } /* constructor() */ get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); } get isSysDarkPrefer() { return this.sysDarkPrefers.matches; } get isDarkMode() { return this.mode === ModeToggle.DARK_MODE; } get isLightMode() { return this.mode === ModeToggle.LIGHT_MODE; } get hasMode() { return this.mode != null; } get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); } /* get the current mode on screen */ get modeStatus() { if (this.isDarkMode || (!this.hasMode && this.isSysDarkPrefer)) { return ModeToggle.DARK_MODE; } else { return ModeToggle.LIGHT_MODE; } } setDark() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.DARK_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE); } setLight() { $('html').attr(ModeToggle.MODE_ATTR, ModeToggle.LIGHT_MODE); sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE); } clearMode() { $('html').removeAttr(ModeToggle.MODE_ATTR); sessionStorage.removeItem(ModeToggle.MODE_KEY); } /* Notify another plugins that the theme mode has changed */ notify() { window.postMessage({ direction: ModeToggle.ID, message: this.modeStatus }, "*"); } } /* ModeToggle */ const toggle = new ModeToggle(); function flipMode() { if (toggle.hasMode) { if (toggle.isSysDarkPrefer) { if (toggle.isLightMode) { toggle.clearMode(); } else { toggle.setLight(); } } else { if (toggle.isDarkMode) { toggle.clearMode(); } else { toggle.setDark(); } } } else { if (toggle.isSysDarkPrefer) { toggle.setLight(); } else { toggle.setDark(); } } toggle.notify(); } /* flipMode() */ </script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src=" /assets/img/miTu.jpg " alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">Optimus-Xs' Blog</a></div><div class="site-subtitle font-italic">「Think Different」</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>首页</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>分类</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>标签</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>归档</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i> <span>关于</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <button class="mode-toggle btn" aria-label="Switch Mode"> <i class="fas fa-adjust"></i> </button> <span class="icon-border"></span> <a href="https://github.com/Optimus-Xs" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['Wenlong.Zuo','outlook.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="fas fa-rss"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> 首页 </a> </span> <span>DNS 协议解析流程</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> 文章</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="搜索..."> </span> <span id="search-cancel" >取消</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>DNS 协议解析流程</h1><div class="post-meta text-muted"><div> 作者 <em> <a href="https://github.com/Optimus-Xs">Optimus-Xs</a> </em></div><div class="d-flex"><div> <span> 发表于 <em class="timeago" data-ts="1650346920" data-toggle="tooltip" data-placement="bottom" data-tooltip-df="llll" > 2022-04-19 </em> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="6316 字"> <em>35 分钟</em>阅读</span></div></div></div><div class="post-content"><h1 id="报文分析">报文分析</h1><p>例子： 名称服务器 (nameserver) 地址为 192.168.18.135。</p><p>该名称服务器管理了一个区域 (zone)，区域的名称为 example.com.。</p><p>环境中有一台用户终端，地址为 192.168.18.136，其在名称服务器中添加了一条解析记录，记录为 user.example.com，该记录的值为本机的地址。</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>+----------------+   query    +--------------------+
+|   Nameserver   |&lt;-----------|        User        |
+| 192.168.18.135 |            |   192.168.18.136   |
+| (example.com.) |-----------&gt;| (user.example.com) |
++----------------+   answer   +--------------------+
+</pre></table></code></div></div><p>当用户在终端上将解析服务 (reslover) 的地址指向名称服务器 (192.168.18.135) 时，他就可以通过 user.example.com 这条域名来访问他的终端 (192.168.18.136)</p><p>用户可以通过 dig、host、ping 等命令来发送 dns 报文，如：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>[root@user ~]# host user.example.com
+user.example.com has address 192.168.18.136
+</pre></table></code></div></div><p>在名称服务器上抓包，第一条为 dns 的请求，其报文如下：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>0000   00 0c 29 8f da 54 00 0c 29 75 2e c5 08 00 45 00   ..).ÚT..)u.Å..E.
+0010   00 3e 33 fd 00 00 40 11 a0 51 c0 a8 12 89 c0 a8   .&gt;3ý..@. QÀ¨..À¨
+0020   12 87 eb 5b 00 35 00 2a 6b 67 aa 96 01 00 00 01   ..ë[.5.*kgª.....
+0030   00 00 00 00 00 00 04 75 73 65 72 07 65 78 61 6d   .......user.exam
+0040   70 6c 65 03 63 6f 6d 00 00 01 00 01               ple.com.....
+</pre></table></code></div></div><p>其中”aa 96 01 00 00 01 00 00 00 00 00 00 04 75 73 65 72 07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 01 00 01” 为 dns 的报文信息。</p><p>DNS 查询响应报文的格式如下：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre>|&lt;--    16    --&gt;|&lt;--    16    --&gt;|(bit)
++----------------+----------------+---
+|       ID       |      FLAG      | ^
++----------------+----------------+ |
+|     QDCOUNT    |     ANCOUNT    | |
++----------------+----------------+
+|     NSCOUNT    |     ARCOUNT    |
++----------------+----------------+
+|             QUESTIONs           | 12bytes
++---------------------------------+
+|              ANSWERs            |
++---------------------------------+
+|            AUTHORITYs           | |
++---------------------------------+ |
+|            ADDITIONALs          | v
++---------------------------------+---
+</pre></table></code></div></div><p>根据上述格式分析 dns 的请求报文信息：</p><ol><li><p>标识 (ID) 为”aa 96”</p><li>标志 (FLAG) 为随后的”01 00”，转化为 bit 为”00000001 00000000”，其格式如下：<div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>  +-----+---------+-----+-----+-----+-----+-------+--------+
+  |QR(1)|opcode(4)|AA(1)|TC(1)|RD(1)|RA(1)|zero(3)|rcode(4)|
+  +-----+---------+-----+-----+-----+-----+-------+--------+
+</pre></table></code></div></div><p>根据下述格式及含义，本条报文的标志部分的含义为：本报文为查询报文，非授权回答，不可截断，期望递归查询，返回码为没有差错。</p><ul><li>QR：0 表示查询报文，1 表示响应报文。<li>opcode：0 表示标准查询，1 为反向查询，2 为服务器状态请求，3 暂无定义，4 为通知 (Notify)，5 为更新 (Update)，6-15 暂无定义<li>AA：表示 “授权回答 (authoritative answer)”。该名字服务器是授权于该域的。<li>TC：表示 “可截断的 (truncated)”。使用 UDP 时，它表示当应答的总长度超过 512 字节时，只返回前 512 字节。<li>RD：表示 “期望递归 (recursion desired)”。该比特能在一个查询中设置，并在响应中返回。这个标志告诉名字服务器必须处理这个查询，也称为一个递归查询。如果该位为 0，且被请求的名字服务器没有一个 授权回答，它就返回一个能解答该查询的其他名字服务器列表，这称为迭代查询。在后面的例子中，我们将看到这两种类型查询的例子。<li>RA：表示 “可用递归”。如果名字服务器支持递归查询，则在响应中将该比特设置为 1。在后面的例子中可看到大多数名字服务器都提供递归查询，除了某些根服务器。<li>zero：必须设置为 0，预留给将来的需求<li>rcode：表示返回码，0 为没有差错，1 为格式错误，2 为服务端失败，3 为不存在的域名，4 为无法执行，5 为请求拒绝，6 为域名异常存在 (不应存在)，7 为解析记录异常存在 (不应存在)，8 为解析记录异 常不存在 (应存在)，9 为名字服务器不能认证该请求区域，10 为请求的域不在区域文件中</ul><li>问题数 (QDCOUNT)”00 01”，为 16bit 整数，表示请求 (requestiong section) 中包含的查询实体，即有几条查询，默认为 1 条。本条报文问题数部分的含义为：包含了一条查询实体，即 user.example.com。<li>资源记录数 (ANCOUNT)”00 00”，为 16bit 整数，表示回答 (answer section) 中包含的资源记录数。本条报文资源记录数部分的含义为：并未包含任何资源记录 (因为是查询报文)。<li>授权资源记录数 (NSCOUNT)”00 00”，为 16bit 整数，表示授权记录 (authority records section) 中包含的名字服务数量。本条报文授权资源记录数部分的含义为：未包含任何授权资源记录数 (因为是查询报文)。<li>额外资源记录数 (ARCOUNT)”00 00”，为 16bit 整数，表示额外记录 (additional records section) 中资源记录的数量。本条报文额外资源记录数部分的含义为：未包含任意额外记录数 (因为是查询报文)。<li>查询问题 (QUESTIONs)”04 75 73 65 72 07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 01 00 01”，其格式如下：<div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>  |&lt;-----          32          -----&gt;|
+  +----------------------------------+
+  |               QNAME              |
+  +-----------------+----------------+
+  |       QTYPE     |     QCLASS     |
+  +----------------------------------+
+  |&lt;--    16     --&gt;|&lt;--   16     --&gt;|
+</pre></table></code></div></div><p>其中”04 75 73 65 72 07 65 78 61 6d 70 6c 65 03 63 6f 6d 00” 即表示查询名 (QNAME)，其格式如下：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>  +--------+-+-+-+-+--------+-+-+-+-+-+-+-+--------+-+-+-+--------+
+  |4(count)|u|s|e|r|7(count)|e|x|a|m|p|l|e|3(count)|c|o|m|0(count)|
+  +--------+-+-+-+-+--------+-+-+-+-+-+-+-+--------+-+-+-+--------+
+</pre></table></code></div></div><p>每个标识符首部为计数，表示了该标识符的长度，末尾的 0 表示根标识符。标识符最长为 63 字节，所以计数应在 0-63 之间。 查询类型 (QTYPE)”00 01”，即 1，表示 A 记录 (域名 =&gt; 主机号)； 查询类 (QCLASS)”00 01”，即 1，表示 IN 类型；</p></ol><p>第二条为 dns 名字服务器应答的报文信息，其报文如下：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre>0000   00 0c 29 75 2e c5 00 0c 29 8f da 54 08 00 45 00   ..)u.Å..).ÚT..E.
+0010   00 71 be 20 00 00 40 11 15 fb c0 a8 12 87 c0 a8   .q¾ ..@..ûÀ¨..À¨
+0020   12 89 00 35 dc 20 00 5d a6 cf aa 96 85 80 00 01   ...5Ü .]¦Ï.¥....
+0030   00 01 00 01 00 01 04 75 73 65 72 07 65 78 61 6d   .......user.exam
+0040   70 6c 65 03 63 6f 6d 00 00 01 00 01 c0 0c 00 01   ple.com.....À...
+0050   00 01 00 00 02 58 00 04 c0 a8 12 88 c0 11 00 02   .....X..À¨..À...
+0060   00 01 00 00 02 58 00 07 04 6e 73 30 31 c0 11 c0   .....X...ns01À.À
+0070   3e 00 01 00 01 00 00 02 58 00 04 c0 a8 12 87      &gt;.......X..À¨..
+</pre></table></code></div></div><p>其中”aa 96 85 80 00 01 00 01 00 01 00 01 04 75 73 65 72 07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 01 00 01 c0 0c 00 01 00 01 00 00 02 58 00 04 c0 a8 12 88 c0 11 00 02 00 01 00 00 02 58 00 07 04 6e 73 30 31 c0 11 c0 3e 00 01 00 01 00 00 02 58 00 04 c0 a8 12 87” 为 dns 的报文信息</p><p>根据 DNS 查询响应报文格式，其中：</p><ol><li>标识为 (ID)”aa 96”。<li>标志为 (FLAG)”85 80”，转化为 bit 为”10000101 10000000”，按照标志部分的格式分析：<div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>  +-----+---------+-----+-----+-----+-----+-------+--------+
+  |QR(1)|opcode(4)|AA(1)|TC(1)|RD(1)|RA(1)|zero(3)|rcode(4)|
+  +-----+---------+-----+-----+-----+-----+-------+--------+
+</pre></table></code></div></div><p>本条报文的含义为：该报文为响应报文，属于标准查询，查询的名字服务器授权该域，本条报文不可截断，具有递归期望的并且是可递归的，返回码没有错误。</p><li>问题数 (QDCOUNT)”00 01”，表示包含 1 条查询实体。<li>资源记录数 (ANCOUNT)”00 01”，表示包含了 1 条资源记录。<li>授权资源记录数 (NSCOUNT)”00 01”，表示包含了 1 条授权资源记录。<li>额外资源记录数 (ARCOUNT)”00 01”，表示包含了 1 条额外资源记录。<li>查询问题 (QUESTIONs)”04 75 73 65 72 07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 01 00 01”，与上一条查询报文中的查询问题含义一致 以下为资源记录部分，资源记录的格式为：<div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre>  |&lt;--    16    --&gt;|&lt;--    16    --&gt;|(bit)
+  +----------------+
+  |      RNAME     |      
+  +----------------+----------------+
+  |      RTYPE     |     RCLASS     |
+  +----------------+----------------+
+  |               RTTL              |
+  +----------------+----------------+
+  |    RDLENGTH    |                |
+  +----------------+                |
+  |               RDATA             |
+  +---------------------------------+
+</pre></table></code></div></div><li>回答 (ANSWERs)”c0 0c 00 01 00 01 00 00 02 58 00 04 c0 a8 13 88”，表示回答中的资源记录，其中域名 (RNAME)”c0 0c” 表示 user.example.com；类型 (RTYPE)”00 01” 值为 1，代表 A 类即主机号；类 (RCLASS)”00 01” 值为 1，代表 IN 互联网；生存时间 (RTTL)”00 00 02 58”，32bit 整数，数值为”00000000 00000000 00000010 01011000”，转换为 10 进制即为 600，单位为秒；资源数据长度 (RDLENGTH)”00 04”，表示后面的资源数据的长度，此处为 4，单位是字节；资源数据 (RDATA)”c0 a8 12 88”，转换为 bit 为”11000000 10101000 00010010 10001000”，即为主机号 192.168.18.136。<li>授权 (AUTHORITYs)”c0 11 00 02 00 01 00 00 02 58 00 07 04 6e 73 30 31 c0 11”，表示授权中的资源记录，其中域名 (RNAME)”c0 11” 表示 example.com；类型 (RTYPE)”00 02” 值为 2，代表 NS 类即名字服务器；类 (RCLASS)”00 01” 值为 1，代表 IN 互联网；生存时间 (RTTL)”00 00 02 58” 同 8，为 600 秒；资源数据长度 (RDLENGTH)”00 07” 表示后面的资源数据长度为 7 字节；资源数据 (RDATA)”04 6e 73 30 31 c0 11”，表示名字服务器地址 ns01.example.com。<li>额外信息 (ADDITIONALs)”c0 3e 00 01 00 01 00 00 02 58 00 04 c0 a8 12 87”，表示额外信息中的资源记录，其中域名 (RNAME)”c0 3e” 表示 ns01.example.com; 类型 (RTYPE)”00 01”，代表 A 类即主机号；类 (RCLASS)”00 01” 代表 IN 互联网；生存时间 (RTTL)”00 00 02 58” 为 600 秒；资源数据长度 (RDLENGTH)”00 04” 表示资源数据长度为 4 字节；资源数据 (RDATA)”c0 a8 12 87”，为主机号 192.168.18.135。 <br /> ？：为什么用户可以向名字服务器发起查询请求及为什么名字服务器能够响应</ol><h1 id="域区域与资源记录">域、区域与资源记录</h1><p>dns 服务维护了一个资源记录映射关系，每条资源记录都像一个键值对，如果这个映射中包含了用户请求的 key，那么 dns 服务就能根据这个 key 返回给用户它对应的 value。 这些映射关系包含在抽象的层级概念中，如域、区域、资源记录。</p><p>域 (domain)：域表示一个域名，带有层级特征，如顶级域.com、.org 等，顶级域下可以设置二级域名，二级域名下又可以设置三级域名。 区域 (zone)：区域从是域表现的一个部分，带有范围特征，它描述的不是域的层级，而是域所管辖的范围。</p><p>域和区域的区别： 例子： 域 (domain) example.com.，包含了一个三级域 cloud.example.com.，以及两个资源记录 user1.example.com 和 user2.example.com。对应的，需要有两个区域 (zone) 来管理 example.com. 和 cloud.example.com. 这两个域的范围，即 user1.example.com 和 user2.example.com 就需要在 example.com. 的区域信息中进行描述，而不是在 cloud.example.com. 的区域信息中描述。</p><p>区域文件示例：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre>$TTL	600
+@       IN	SOA	ns01.example.com. example.com. (
+                                        0       ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+@       	NS      ns01.example.com.
+ns01    	A       192.168.18.135
+user		A       192.168.18.136
+</pre></table></code></div></div><p>其中 SOA 表示了区域授权的起始，它包含了名字服务器域名 (mname)、区域负责人邮箱域名 (rname)、序列号 (serial)、刷新时间 (refresh)、重试间隔 (retry)、过期时间 (expire)、最小 ttl 时间 (minimun，bind8.2 之后已由第一行的 TTL 代替)。</p><p>NS 指名字服务器，表示在这个区域 (如 example.com.) 中，ns01.example.com (即 192.168.18.135) 有权利回答所有 dns 查询请求，并且回答是最可靠的。如果一个区域中配置了多个名字服务器，如：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre>$TTL	600
+@       IN	SOA	ns01.example.com. example.com. (
+                                        0       ; serial
+                                        1D      ; refresh
+                                        1H      ; retry
+                                        1W      ; expire
+                                        3H )    ; minimum
+@           NS      ns01.example.com.
+@           NS      ns02.example.com.
+ns01    	A       192.168.18.135
+ns02		A       192.168.18.137
+user		A       192.168.18.136
+</pre></table></code></div></div><p>那么 ns02 将作为辅助服务器协同 ns01 工作，它也可以响应关于该区域的 dns 查询请求。</p><p>在一般的 dns 集群中，存在一个主名字服务器，一个或多个辅助名字服务器。主名字服务器的数据变更时，通过 DNS 区域信息传输协议 (AXFR) 将变更后的区域信息通知给每个与之相连的辅助名字服务器。在这个过程中，需要依赖 SOA 给出的信息，如序列号，该值是辅助名字服务器判断是否与主名字服务器同步的标志。</p><p>资源记录 (resource records)：域是由域名的集合组成并描述的；资源记录表征了域名与其所对应的资源。在这个集合中，域名的顺序并不重要。 一般情况下，资源记录具有以下几个属性： 属主 (owner)：表示这个资源记录属于哪个域 类型 (type)：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre><td class="rouge-code"><pre>类型            值 含义
+A               1  主机号
+NS              2  名字服务器
+MD              3  邮件目的地(已弃用)
+MF              4  邮件转发者(已弃用)
+CNAME           5  别名的规范名称
+SOA             6  授权区域起始
+MB              7  邮箱域名(试验性)
+MG              8  邮件组成员(试验性)
+MR              9  邮件重命名域名(试验性)
+NULL            10 空记录(试验性)
+WKS             11 皆知的服务描述
+PTR             12 域名指针
+HINFO           13 主机信息
+MINFO           14 邮件列表信息
+MX              15 邮件服务器
+TXT             16 文本字符串
+</pre></table></code></div></div><p>类 (class)</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>类              值 含义
+IN              1 互联网
+CS              2 the CSNET class (Obsolete - used only for examples in some obsolete RFCs)(特殊网络，可查看wiki了解详情)
+CH              3 the CHAOS class(特殊网络，可查看wiki了解详情)
+HS              4 Hesiod [Dyer 87](特殊网络，可查看wiki了解详情)
+</pre></table></code></div></div><p>存活时间 (TTL)； 资源数据 (RDATA)：对于 A 类型，资源数据为一个 32 位 IP 地址；CNAME 的资源数据是一个域名；MX 的资源记录是一个 16 位首选值加上用作邮件服务器的主机名；NS 的资源数据是一个主机名；PTR 的资源数据是一个域名；SOA 的资源记录是一段包含 SOA 各个属性的授权信息。</p><p>？：区域之间是怎么交换信息的</p><h1 id="dns-通信">DNS 通信</h1><p>dns 可以使用 udp 及 tcp 来进行通信，使用的端口都是 53。</p><p>dns 使用 udp 的原因：dns 的主要工作场景在于处理来自解析器的 dns 查询请求以及对其的反馈，udp 的传输速度快，对系统资源的开销小，非常适合这种场景。 dns 使用 tcp 的原因：当使用 udp 传输数据时，数据被限制在 512 字节内，超过 512 字节，数据将被截断 (设置 TC 标志)。当解析器得到的反馈报文中 TC 标志设置为 1 时，它会认为这个报文的数据超过 512 字节限制，那么它将重发一次请求，这个时候就需要用 tcp 来进行重传 (udp 也可以进行重传)。此外，区域信息传输的过程中，同样需要使用 tcp 来传输这些数据。</p><p>AXFR：授权转移 (Authoritative Transfer)，用于传输区域 (zone) 的信息。AXFR 应答报文由一系列 (包含 1) DNS 报文组成，其中第一条报文及最后一条报文需要包含区域的 SOA 资源记录，中间的报文为该区域 (zone) 的资源记录信息，如可以包含 NS 类、A 类、CNAME 类记录等。</p><p>用户可以通过 dig 命令向名字服务器发起 AXFR 请求，如：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre>[root@user ~]# dig @192.168.18.135 example.com. AXFR
+
+; &lt;&lt;&gt;&gt; DiG 9.9.4-RedHat-9.9.4-61.el7 &lt;&lt;&gt;&gt; @192.168.18.135 example.com. AXFR
+; (1 server found)
+;; global options: +cmd
+example.com.		600	IN	SOA	ns01.example.com. example.com. 0 86400 3600 604800 10800
+example.com.		600	IN	NS	ns01.example.com.
+master.example.com.	600	IN	A	192.168.18.135
+ns01.example.com.	600	IN	A	192.168.18.135
+user.example.com.	600	IN	A	192.168.18.136
+example.com.		600	IN	SOA	ns01.example.com. example.com. 0 86400 3600 604800 10800
+;; Query time: 6 msec
+;; SERVER: 192.168.18.135#53(192.168.18.135)
+;; WHEN: Thu Jun 28 11:50:34 EDT 2018
+;; XFR size: 6 records (messages 1, bytes 180)
+
+</pre></table></code></div></div><p>以下为 AXFR 请求报文：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>0000   00 0c 29 8f da 54 00 0c 29 75 2e c5 08 00 45 00   ..).ÚT..)u.Å..E.
+0010   00 5e 3e 3e 40 00 40 06 55 fb c0 a8 12 89 c0 a8   .^&gt;&gt;@.@.UûÀ¨..À¨
+0020   12 87 9c 57 00 35 7f 16 52 5b 2e be 97 6e 80 18   ...W.5..R[.¾.n..
+0030   00 e5 30 88 00 00 01 01 08 0a 00 01 6c 67 00 01   .å0.........lg..
+0040   7b 3a 00 28 a9 0d 00 20 00 01 00 00 00 00 00 01   {:.(©.. ........
+0050   07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 fc 00   .example.com..ü.
+0060   01 00 00 29 10 00 00 00 00 00 00 00               ...)........
+</pre></table></code></div></div><p>其中”00 28 a9 0d 00 20 00 01 00 00 00 00 00 01 07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 fc 00 01 00 00 29 10 00 00 00 00 00 00 00” 为 dns 报文信息。</p><ol><li>首部”00 28” 表示这段报文的长度<li>标识为”a9 0d”<li>标志为”00 20”，转换为 bit 为”00000000 00100000”，其格式如下：<div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>  +-----+---------+-----+-----+-----+-----+-------+--------+
+  |QR(1)|opcode(4)|AA(1)|TC(1)|RD(1)|RA(1)|zero(3)|rcode(4)|
+  +-----+---------+-----+-----+-----+-----+-------+--------+
+</pre></table></code></div></div><p>此处的含义为，该报文为请求报文，是标准查询，非授权回答，是不可截断的，是不期望递归的，是无可用递归查询的，返回码无差错。</p><li>随后的”00 01 00 00 00 00 00 01” 分别表示问题数、回答中包含的资源记录数、授权资源记录数、额外资源记录数，每个片段有 16 位。此处的含义为，含有一个请求以及一个额外资源记录。<li>查询问题”07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 fc 00 01”。其中”07 65 78 61 6d 70 6c 65 03 63 6f 6d 00” 为请求的域名 (example.com)，其格式如下：<div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>  +--------+-+-+-+-+-+-+-+--------+-+-+-+--------+
+  |7(count)|e|x|a|m|p|l|e|3(count)|c|o|m|0(count)|
+  +--------+-+-+-+-+-+-+-+--------+-+-+-+--------+
+</pre></table></code></div></div><p>之后的”00 fc” 为查询类型，转换为十进制数为 252，即为 AXFR；末尾的”00 01” 表示查询类，即”IN”。</p><li>额外信息”00 00 29 10 00 00 00 00 00 00 00”，表示此处为一条 OPT 记录，其详情可以参考 RFC 2671。</ol><p>以下为 AXFR 应答报文：</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre>0000   00 0c 29 75 2e c5 00 0c 29 8f da 54 08 00 45 00   ..)u.Å..).ÚT..E.
+0010   00 ea ec 55 40 00 40 06 a7 57 c0 a8 12 87 c0 a8   .êìU@.@.§WÀ¨..À¨
+0020   12 89 00 35 9c 57 2e be 97 6e 7f 16 52 85 80 18   ...5.W.¾.n..R...
+0030   00 e3 a7 3d 00 00 01 01 08 0a 00 01 7b 3c 00 01   .ã§=........{&lt;..
+0040   6c 67 00 b4 a9 0d 84 00 00 01 00 06 00 00 00 00   lg.´©...........
+0050   07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 fc 00   .example.com..ü.
+0060   01 c0 0c 00 06 00 01 00 00 02 58 00 1d 04 6e 73   .À........X...ns
+0070   30 31 c0 0c c0 0c 00 00 00 00 00 01 51 80 00 00   01À.À.......Q...
+0080   0e 10 00 09 3a 80 00 00 2a 30 c0 0c 00 02 00 01   ....:...*0À.....
+0090   00 00 02 58 00 02 c0 29 06 6d 61 73 74 65 72 c0   ...X..À).masterÀ
+00a0   0c 00 01 00 01 00 00 02 58 00 04 c0 a8 12 87 c0   ........X..À¨..À
+00b0   29 00 01 00 01 00 00 02 58 00 04 c0 a8 12 87 04   ).......X..À¨...
+00c0   75 73 65 72 c0 0c 00 01 00 01 00 00 02 58 00 04   userÀ........X..
+00d0   c0 a8 12 88 c0 0c 00 06 00 01 00 00 02 58 00 18   À¨..À........X..
+00e0   c0 29 c0 0c 00 00 00 00 00 01 51 80 00 00 0e 10   À)À.......Q.....
+00f0   00 09 3a 80 00 00 2a 30                           ..:...*0
+</pre></table></code></div></div><p>其中”00 b4 a9 0d 84 00 00 01 00 06 00 00 00 00 07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 fc 00 01 c0 0c 00 06 00 01 00 00 02 58 00 1d 04 6e 73 30 31 c0 0c c0 0c 00 00 00 00 00 01 51 80 00 00 0e 10 00 09 3a 80 00 00 2a 30 c0 0c 00 02 00 01 00 00 02 58 00 02 c0 29 06 6d 61 73 74 65 72 c0 0c 00 01 00 01 00 00 02 58 00 04 c0 a8 12 87 c0 29 00 01 00 01 00 00 02 58 00 04 c0 a8 12 87 04 75 73 65 72 c0 0c 00 01 00 01 00 00 02 58 00 04 c0 a8 12 88 c0 0c 00 06 00 01 00 00 02 58 00 18 c0 29 c0 0c 00 00 00 00 00 01 51 80 00 00 0e 10 00 09 3a 80 00 00 2a 30” 为 dns 报文信息。</p><ol><li>首部”00 b4” 表示这段报文的长度<li>标识为”a9 0d”<li>标志为”84 00”，转换为 bit 为”10000100 00000000”，其格式如下：<div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>  +-----+---------+-----+-----+-----+-----+-------+--------+
+  |QR(1)|opcode(4)|AA(1)|TC(1)|RD(1)|RA(1)|zero(3)|rcode(4)|
+  +-----+---------+-----+-----+-----+-----+-------+--------+
+</pre></table></code></div></div><p>此处的含义为，该报文为应答报文，是标准查询，是授权回答，是不可截断的，是不期望递归的，是无可用递归查询的，返回码为无差错。</p><li>随后的”00 01 00 06 00 00 00 00” 分别表示问题数、回答中包含的资源记录数、授权资源记录数、额外资源记录数，每个片段有 16 位。此处的含义为，含有一个请求以及应答中包含六条资源记录数。<li>之后的”07 65 78 61 6d 70 6c 65 03 63 6f 6d 00 00 fc 00 01” 表示查询内容，其中”07 65 78 61 6d 70 6c 65 03 63 6f 6d 00” 为查询的域名，其格式如下：<div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>  +--------+-+-+-+-+-+-+-+--------+-+-+-+--------+
+  |7(count)|e|x|a|m|p|l|e|3(count)|c|o|m|0(count)|
+  +--------+-+-+-+-+-+-+-+--------+-+-+-+--------+
+</pre></table></code></div></div><p>之后的”00 fc” 为查询类型，转换为十进制数为 252，即为 AXFR；末尾的”00 01” 表示查询类，即”IN”。</p><li>之后的全部报文为 AXFR 的应答信息：<ol><li>第一条资源记录是 SOA 记录，它的报文为”c0 0c 00 06 00 01 00 00 02 58 00 1d 04 6e 73 30 31 c0 0c c0 0c 00 00 00 00 00 01 51 80 00 00 0e 10 00 09 3a 80 00 00 2a 30”。由域名”c0 0c”(example.com)、类型”00 06”(SOA)、类”00 01”(IN)、生存时间”00 00 02 58”(600 秒)、资源数据长度”00 1d”(29 字节)、主名字服务器”04 6e 73 30 31 c0 0c”(ns01.example.com)、区域责任人邮箱”c0 0c”(example.com)、序列号”00 00 00 00”(0)、刷新时间”00 01 51 80”(86400 秒，即 1 天)、重试间隔”00 00 0e 10”(3600 秒，即 1 小时)、过期时间”00 09 3a 80”(604800 秒，即 7 天)、最小 TTL 时间”00 00 2a 30”(10800 秒，即 3 小时) 组成。<li>第一条资源记录是 NS 记录，它的报文为”c0 0c 00 02 00 01 00 00 02 58 00 02 c0 29”。由域名”c0 0c”(example.com)、类型”00 02”(NS)、类”00 01”(IN)、生存时间”00 00 02 58”(600 秒)、资源数据长度”00 02”(2 字节)、资源记录”c0 29”(ns01.example.com) 组成。<li>第三条资源记录是 A 记录，它的报文为”06 6d 61 73 74 65 72 c0 0c 00 01 00 01 00 00 02 58 00 04 c0 a8 12 87”。由域名”06 6d 61 73 74 65 72 c0 0c”(master.example.com)、类型”00 01”(A)、类”00 01”(IN)、生存时间”00 00 02 58”(600 秒)、资源数据长度”00 04”(4 字节)、资源记录”c0 a8 12 87”(192.168.18.135) 组成。<li>第四条资源记录是 A 记录，它的报文为”c0 29 00 01 00 01 00 00 02 58 00 04 c0 a8 12 87”。由域名”c0 29”(ns01.example.com)、类型”00 01”(A)、类”00 01”(IN)、生存时间”00 00 02 58”(600 秒)、资源数据长度”00 04”(4 字节)、资源记录”c0 a8 12 87”(192.168.18.135) 组成。<li>第五条资源记录是 A 记录，它的报文为”04 75 73 65 72 c0 0c 00 01 00 01 00 00 02 58 00 04 c0 a8 12 88”。由域名”04 75 73 65 72 c0 0c”(user.example.com)、类型”00 01”(A)、类”00 01”(IN)、生存时间”00 00 02 58”(600 秒)、资源数据长度”00 04”(4 字节)、资源记录”c0 a8 12 88”(192.168.18.136) 组成。<li>最后一条资源是 SOA 记录，它的报文与第一条是一致的。</ol></ol><p>IXFR：增量区域传输 (Incremental Zone Transfer)，与 AXFR 一样用于传输区域 (zone) 的信息，但只传输增量数据。主要用于 DNS NOTIFY。</p><p>NOTIFY：用于 Master 向 Slave 通知区域信息变更。默认使用 udp 传输，Master 可以指定使用 tcp 传输。区别是，tcp 方式只发送一次 notify，超过响应等待时间后返回超时；而 udp 方式会定期发送 notify，直到发送了过多的副本 (即超时) 或者收到了对应的回复。</p><p>例子： Master 与 Slave 之间使用 DNS NOTIFY 机制同步数据过程</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="已复制！"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre>+---------------------+ 1.notify(query)    +---------------------+
+|                     |-------------------&gt;|                     |
+|                     | 2.notify(response) |                     |
+|                     |&lt;-------------------|                     |
+|        Master       | 3.SOA(query)       |        Slave        |
+|   192.168.18.135    |&lt;-------------------|   192.168.18.137    |
+| (ns01.example.com.) | 4.SOA(response)    | (ns02.example.com.) |
+|                     |-------------------&gt;|                     |
+|                     | 5.IXFR(query)      |                     |
+|                     |&lt;-------------------|                     |
+|                     | 6.IXFR(response)   |                     |
+|                     |-------------------&gt;|                     |
++---------------------+                    +---------------------+
+</pre></table></code></div></div><ol><li>当 Master 区域信息变更后，向 Slave 发起 notify 的请求<li>Slave 响应 notify 请求<li>Slave 向 Master 请求 SOA 信息<li>Master 应答 SOA 请求<li>Slave 根据自己的 SOA 序列号以及由 Master 处请求到的 SOA 序列号，判断自己是否需要变更 (注：如果双发的 SOA 序列号一致，那么即使区域信息是有区别的，Slave 也不会向 Master 发起更新请求)，如果需要变更，则向 Master 发起 IXFR 请求，期望同步区域信息到 Master 的那个版本<li>Master 应答了 Slave 的 IXFR 请求，返回了两个版本区域信息的增量记录</ol><h1 id="参考">参考</h1><ul><li><a href="https://tools.ietf.org/html/rfc1034">https://tools.ietf.org/html/rfc1034</a><li><a href="https://tools.ietf.org/html/rfc1035">https://tools.ietf.org/html/rfc1035</a><li><a href="https://tools.ietf.org/html/rfc1995">https://tools.ietf.org/html/rfc1995</a><li><a href="https://tools.ietf.org/html/rfc1996">https://tools.ietf.org/html/rfc1996</a><li><a href="https://tools.ietf.org/html/rfc5936">https://tools.ietf.org/html/rfc5936</a></ul></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/bottom-layer-knowledge/'>Bottom Layer Knowledge</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/network/" class="post-tag no-text-decoration" >Network</a> <a href="/tags/%E5%8D%8F%E8%AE%AE%E8%A7%A3%E6%9E%90/" class="post-tag no-text-decoration" >协议解析</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> 本文由作者按照 <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> 进行授权</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">分享</span> <span class="share-icons"> <a href="https://t.me/share/url?url=https://optimus-xs.github.io/posts/dns-workflow/&amp;text=DNS 协议解析流程 - Optimus-Xs&#39; Blog" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://optimus-xs.github.io/posts/dns-workflow/" data-toggle="tooltip" data-placement="top" title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin"> <i class="fa-fw fab fa-linkedin"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="分享链接" data-title-succeed="链接已复制！"> </i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">最近更新</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/how-to-write-a-dockerfile-elegantly/">如何优雅的编写Dockerfile</a><li><a href="/posts/java-file-io-usage/">Java 文件 IO 使用方法</a><li><a href="/posts/jvm-gc-mechanism/">JVM 的垃圾回收机制</a><li><a href="/posts/docker-engine-installation-on-ubuntu/">在 Ubuntu 上安装 Dockers Engine 流程</a></ul></div><div id="access-tags"><div class="panel-heading">热门标签</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/java/">Java</a> <a class="post-tag" href="/tags/spring/">Spring</a> <a class="post-tag" href="/tags/devdairy/">DevDairy</a> <a class="post-tag" href="/tags/data-structure/">Data Structure</a> <a class="post-tag" href="/tags/%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/">安装流程</a> <a class="post-tag" href="/tags/geekdairy/">GeekDairy</a> <a class="post-tag" href="/tags/linux/">Linux</a> <a class="post-tag" href="/tags/network/">Network</a> <a class="post-tag" href="/tags/redis/">Redis</a> <a class="post-tag" href="/tags/docker/">Docker</a></div></div></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="tail-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>相关文章</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/dns-message-format/"><div class="card-body"> <em class="timeago small" data-ts="1650280620" > 2022-04-18 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>DNS报文格式</h3><div class="text-muted small"><p> 我们知道查询一个域名，需要与 DNS 服务器进行通信。那么，DNS 通信过程大概是怎样的呢？ DNS 是一个典型的 Client-Server 应用，客户端发起域名查询请求，服务端对请求进行应答： DNS 一般采用 UDP 作为传输层协议（ TCP 亦可），端口号是 53 。请求报文和应答报文均作为数据，搭载在 UDP 数据报中进行传输： 很显然，DNS 请求报文和应答报文均需...</p></div></div></a></div><div class="card"> <a href="/posts/4-protocols-for-enhanced-domain-name-security/"><div class="card-body"> <em class="timeago small" data-ts="1653223620" > 2022-05-22 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>4种强化域名安全的协议</h3><div class="text-muted small"><p> 传统的 DNS 有啥问题 传统的 DNS 是一个【比较古老】的协议。最早的草案可以追溯到1983年。1987年定稿之后，基本上没啥变化。 设计 DNS 的时候，互联网基本上还是个玩具。那年头的互联网协议，压根儿都没考虑安全性，DNS 当然也不例外。所以 DNS 的交互过程全都是【明文】滴，既无法做到“保密性”，也无法实现“完整性”。 缺乏“保密性”就意味着——任何一个能【监视】你上网流量...</p></div></div></a></div><div class="card"> <a href="/posts/udp-hole-punching-analysis/"><div class="card-body"> <em class="timeago small" data-ts="1647588000" > 2022-03-18 </em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>UDP 打洞技术解析</h3><div class="text-muted small"><p> P2P 通信最大的障碍就是 NAT（网络地址转换），NAT 使得局域网内的设备也可以与公网进行通讯，但是不同 NAT 下的设备之间通讯将会变得很困难。UDP 打洞就是用来使得设备间绕过 NAT 进行通讯的一种技术。 简单解释 NAT NAT 大家应该十分熟悉了，它分为几种。一种就叫做 NAT，它只对 IP 地址进行转换；另一种叫做 NAPT（Network Address/Port Tra...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/dns-message-format/" class="btn btn-outline-primary" prompt="上一篇"><p>DNS报文格式</p></a> <a href="/posts/principle-and-implementation-of-heaps/" class="btn btn-outline-primary" prompt="下一篇"><p>堆的原理和实现</p></a></div></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center text-muted"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://github.com/Optimus-Xs">Optimus-Xs</a>. <span data-toggle="tooltip" data-placement="top" title="除非另有说明，本网站上的博客文章均由作者按照知识共享署名 4.0 国际 (CC BY 4.0) 许可协议进行授权。">保留部分权利。</span></p></div><div class="footer-right"><p class="mb-0"> 本站由 <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> 生成，采用 <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> 主题。</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">热门标签</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/java/">Java</a> <a class="post-tag" href="/tags/spring/">Spring</a> <a class="post-tag" href="/tags/devdairy/">DevDairy</a> <a class="post-tag" href="/tags/data-structure/">Data Structure</a> <a class="post-tag" href="/tags/%E5%AE%89%E8%A3%85%E6%B5%81%E7%A8%8B/">安装流程</a> <a class="post-tag" href="/tags/geekdairy/">GeekDairy</a> <a class="post-tag" href="/tags/linux/">Linux</a> <a class="post-tag" href="/tags/network/">Network</a> <a class="post-tag" href="/tags/redis/">Redis</a> <a class="post-tag" href="/tags/docker/">Docker</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">搜索结果为空</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/lozad/dist/lozad.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script src="https://cdn.jsdelivr.net/combine/npm/dayjs@1/dayjs.min.js,npm/dayjs@1/locale/zh-cn.min.js,npm/dayjs@1/plugin/relativeTime.min.js,npm/dayjs@1/plugin/localizedFormat.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.bundle.min.js"></script> <script defer src="/app.js"></script>
