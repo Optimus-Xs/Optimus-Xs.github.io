@@ -53,7 +53,7 @@ lrwxrwxrwx 1 root root  9 Jun 12 09:58 wwn-0x500********f289 -> ../../sdb
 使用的工具为qm(Qemu/KVM虚拟机管理器)，通过命令 set 来设置物理磁盘到虚拟机中。
 
 ```shell
-qm set <vm_id> –<disk_type>[n] /dev/disk/by-id/<type>-$brand-$model_$serial_number
+qm set <vm_id> -<disk_type>[n] /dev/disk/by-id/<type>-$brand-$model_$serial_number
 ```
 注释：
 
