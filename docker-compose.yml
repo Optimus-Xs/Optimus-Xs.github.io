@@ -1,0 +1,11 @@
+# preview in local env while writing
+services:
+  jekyll:
+    build: .
+    image: optimus-blog
+    container_name: optimus-blog
+    volumes:
+      - ./_posts:/home/Optimus-Xs.github.io/_posts
+    ports:
+      - "4000:4000"
+      - "35729:35729"
