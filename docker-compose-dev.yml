@@ -1,7 +1,7 @@
 # dev env for Jekyll or theme upgrade
 services:
   jekyll:
-    image: ruby:3.1
+    image: ruby:3.3
     container_name: optimus-blog-dev
     volumes:
       - ./:/home/Optimus-Xs.github.io/

@@ -4,11 +4,11 @@
 !.editorconfig
 !.nojekyll
 !.travis.yml
-!.dockerignore
 
 # bundler cache
 _site
 vendor
+Gemfile.lock
 
 # rubygem
 *.gem
@@ -16,3 +16,7 @@ vendor
 # npm dependencies
 node_modules
 package-lock.json
+
+# custom
+.git/
+_site/
