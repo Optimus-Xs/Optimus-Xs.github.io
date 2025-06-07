@@ -178,5 +178,5 @@ B树也称B-树,它是一颗多路平衡查找树。我们描述一颗B树时需
 
 # 参考内容
 - [B+树介绍](https://www.cnblogs.com/wade-luffy/p/6292784.html)
-- [从MySQL Bug#67718浅谈B+树索引的分裂优化](http://hedengcheng.com/?p=525)
+- [从MySQL Bug#67718浅谈B+树索引的分裂优化](https://web.archive.org/web/20191019015743/http://hedengcheng.com/?p=525)
 - [B+树的几点总结](https://www.jianshu.com/p/6f68d3c118d6)
