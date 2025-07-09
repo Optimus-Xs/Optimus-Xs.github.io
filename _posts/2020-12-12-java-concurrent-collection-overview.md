@@ -2,6 +2,8 @@
 layout: post
 title: Java 并发集合概览
 date: 2020-12-12 22:43 +0800
+categories: [Software Development] 
+tags: [Java]
 ---
 
 这篇主要简单介绍 Java 集合库包含哪些常用的容器类，它们可以简单区分为:
