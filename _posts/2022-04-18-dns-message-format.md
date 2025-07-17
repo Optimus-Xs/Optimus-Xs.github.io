@@ -10,11 +10,11 @@ tags: [Network, 协议解析]
 
 DNS 是一个典型的 Client-Server 应用，客户端发起域名查询请求，服务端对请求进行应答：
 
-![](https://i.ibb.co/g9RC196/ba987b1fa1b0168df88331eee7bfa7e058a4cfb6.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-04-18-dns-message-format/ba987b1fa1b0168df88331eee7bfa7e058a4cfb6.png)
 
 DNS 一般采用 UDP 作为传输层协议（ TCP 亦可），端口号是 53 。请求报文和应答报文均作为数据，搭载在 UDP 数据报中进行传输：
 
-![](https://i.ibb.co/68ZsNMT/4e9f63a16c60af3fc49a951154a2f3d2c0f21f98.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-04-18-dns-message-format/4e9f63a16c60af3fc49a951154a2f3d2c0f21f98.png)
 
 很显然，DNS 请求报文和应答报文均需要满足一定的格式，才能被通信双方所理解。这就是 DNS 协议负责的范畴，它位于传输层之上，属于 应用层 协议。
 
@@ -31,7 +31,7 @@ DNS 报文分为 请求 和 应答 两种，结构是类似的，大致分为五
 >也有不少文献将 DNS 请求称为 DNS 查询（ query ），两者是一个意思。
 {: .prompt-tip }
 
-![](https://i.ibb.co/sRBWGH6/bb5146dfd61519aebc02722d4e62acaa1aba94e0.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-04-18-dns-message-format/bb5146dfd61519aebc02722d4e62acaa1aba94e0.png)
 
 其中，头部是固定的，共 12 字节；其他节不固定，记录数可多可少，数目保存在头部中。头部分为 6 个字段：
 
@@ -66,7 +66,7 @@ DNS 报文分为 请求 和 应答 两种，结构是类似的，大致分为五
 # 问题记录
 客户端查询域名时，需要向服务端发送请求报文；待查询域名作为问题记录，保存在问题节中。
 
-![](https://i.ibb.co/fv5NvRQ/4e3499436f3827644b71c9e392e2e5462cad6402.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-04-18-dns-message-format/4e3499436f3827644b71c9e392e2e5462cad6402.png)
 
 问题节支持保存多条问题记录，记录条数则保存在 DNS 头部中的问题记录数字段。这意味着，DNS 协议单个请求能够同时查询多个域名，虽然通常只查询一个。
 
@@ -103,7 +103,7 @@ DNS 报文分为 请求 和 应答 两种，结构是类似的，大致分为五
 # 资源记录
 服务端处理查询请求后，需要向客户端发送应答报文；域名查询结果作为资源记录，保存在答案以及其后两节中。
 
-![](https://i.ibb.co/yPVddn2/d9cdce4af72ec74a5795f1215be063c59253b883.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-04-18-dns-message-format/d9cdce4af72ec74a5795f1215be063c59253b883.png)
 
 答案节、授权信息节和附加信息节均由一条或多条资源记录组成，记录数目保存在头部中的对应字段，不再赘述。
 

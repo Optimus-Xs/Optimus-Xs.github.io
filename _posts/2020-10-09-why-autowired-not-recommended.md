@@ -10,7 +10,7 @@ tags: [Java, Spring, DevDairy]
 
 但是当我们使用IDEA写代码的时候，经常会发现@Autowired注解下面是有小黄线的，我们把小鼠标悬停在上面，可以看到这个如下图所示的警告信息：
 
-![](https://i.ibb.co/MRHWVnr/bVcVPVz.webp)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-10-09-why-autowired-not-recommended/bVcVPVz.webp)
 
 那么为什么IDEA会给出Field injection is not recommended这样的警告呢？
 

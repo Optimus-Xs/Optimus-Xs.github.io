@@ -126,7 +126,7 @@ nginx 在 1.9.1 版本加入了这个功能 [Socket Sharding in NGINX Release 1.
 
 反应到 nginx 上就是，每个 worker 进程都创建独立的 listening socket，监听相同的端口，accept 时只有一个进程会获得连接。效果就和下图所示一样。
 
-![](https://www.f5.com/content/dam/f5-com/nginx-import/Slack-for-iOS-Upload-e1432652376641.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-3-5-nginx-thundering-herd-problem-principles-and-solutions/Slack-for-iOS-Upload-e1432652376641.png)
 
 在 Nginx 中使用 `SO_REUSEPORT` 非常简单，只需要在 listen 指令中添加 reuseport 参数即可。
 

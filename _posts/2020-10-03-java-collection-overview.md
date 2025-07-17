@@ -9,7 +9,7 @@ tags: [Java]
 # Java集合框架
 集合是java中存放对象的容器，存放于java.util包中。下图是java集合类的继承与实现关系：
 
-![java集合类的继承与实现关系](https://www.runoob.com/wp-content/uploads/2014/01/2243690-9cd9c896e0d512ed.gif)
+![java集合类的继承与实现关系](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-10-03-java-collection-overview/2243690-9cd9c896e0d512ed.gif)
 
 ## 框架图说明
 

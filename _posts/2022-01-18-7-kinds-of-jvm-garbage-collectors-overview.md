@@ -9,7 +9,7 @@ tags: [Java, JVM]
 
 # 堆内存详解
 
-![](https://i.ibb.co/42TkWHz/bVcHwwL.webp)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-18-7-kinds-of-jvm-garbage-collectors-overview/bVcHwwL.webp)
 
 上面这个图大家应该已经很明白了吧。大家就可以理解成一个房子被分成了几个房间，每个房间的作用不同而已，有的是婴儿住的，有的是父母住的，有的是爷爷奶奶住的
 
@@ -75,11 +75,11 @@ TLAB空间一般不会太大，当大对象无法在TLAB分配时，则会直接
 | -XX:+PrintTLAB              | 查看TLAB信息                                                                                           |
 | -Xx:ResizeTLAB              | 自调整TLABRefillWasteFraction阀值。                                                                    |
 
-![](https://i.ibb.co/NZtjgMk/20200326170515966.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-18-7-kinds-of-jvm-garbage-collectors-overview/20200326170515966.png)
 
 
 # 垃圾回收器总览
-![](https://i.ibb.co/PwG1k1x/bVcHHZL.webp)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-18-7-kinds-of-jvm-garbage-collectors-overview/bVcHHZL.webp)
 
 新生代可配置的回收器：Serial、ParNew、Parallel Scavenge
 

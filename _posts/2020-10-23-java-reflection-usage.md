@@ -1000,7 +1000,7 @@ public class HelloReflect {
 ```
 来看执行流程
 
-![执行流程](https://i.ibb.co/Bn4RDYt/java-basic-reflection-1.png)
+![执行流程](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-10-23-java-reflection-usage/java-basic-reflection-1.png)
 
 ## 反射获取类实例
 首先调用了 java.lang.Class 的静态方法，获取类信息。

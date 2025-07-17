@@ -10,7 +10,7 @@ tags: [Java, Spring]
 ## Spring Bean 的整个生命周期
 Google Spring Bean 的生命周期，大多以下图给出的流程作为答案
 
-![](https://i.ibb.co/vzXxK62/Spring.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-03-spring-bean-s-lifecycle/vzXxK62-Spring.png)
 
 但是当我第一次看到这个图时，人麻了，“Aware，BeanPostProcessor......这些都是什么啊？而且这么多步骤，太多了，该怎么记啊？”。
 
@@ -27,7 +27,7 @@ Google Spring Bean 的生命周期，大多以下图给出的流程作为答案
 - 初始化 Initialization
 - 销毁 Destruction
 
-![](https://i.ibb.co/qW5Jkx8/Spring.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-03-spring-bean-s-lifecycle/qW5Jkx8-Spring.png)
 
 1. 实例化：第 1 步，实例化一个 bean 对象；
 2. 属性赋值：第 2 步，为 bean 设置相关属性和依赖；
@@ -154,7 +154,7 @@ public void destroy() {
 
 这两兄弟可能是Spring扩展中最重要的两个接口！InstantiationAwareBeanPostProcessor作用于实例化阶段的前后，BeanPostProcessor作用于初始化阶段的前后。正好和第一、第三个生命周期阶段对应。通过图能更好理解：
 
-![](https://i.ibb.co/TMQ0ZxM/4558491-dc3eebbd1d6c65f4.webp)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-03-spring-bean-s-lifecycle/4558491-dc3eebbd1d6c65f4.webp)
 
 InstantiationAwareBeanPostProcessor实际上继承了BeanPostProcessor接口，严格意义上来看他们不是两兄弟，而是两父子。但是从生命周期角度我们重点关注其特有的对实例化阶段的影响，图中省略了从BeanPostProcessor继承的方法。
 

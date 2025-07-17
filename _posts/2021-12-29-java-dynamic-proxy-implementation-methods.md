@@ -19,11 +19,11 @@ tags: [Java]
 
 1.为现有的每一个类都编写一个对应的代理类，并且让它实现和目标类相同的接口（假设都有）
 
-![](https://i.ibb.co/5M8SW8Y/v2-001c5db900d8785d47c1a5a0c6f32762-720w.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2021-12-29-java-dynamic-proxy-implementation-methods/v2-001c5db900d8785d47c1a5a0c6f32762-720w.png)
 
 2.在创建代理对象时，通过构造器塞入一个目标对象，然后在代理对象的方法内部调用目标对象同名方法，并在调用前后打印日志。也就是说，代理对象 = 增强代码 + 目标对象（原对象）。有了代理对象后，就不用原对象了
 
-![](https://i.ibb.co/KqbKyXs/v2-e302487f952bdf8e284afc0d8d6a770b-720w.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2021-12-29-java-dynamic-proxy-implementation-methods/v2-e302487f952bdf8e284afc0d8d6a770b-720w.jpg)
 
 **静态代理的缺陷**
 
@@ -33,15 +33,15 @@ tags: [Java]
 
 创建对象的过程
 
-![](https://i.ibb.co/6PdbMBY/v2-9cd31ab516bd967e1b8e68736931f8ba-720w.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2021-12-29-java-dynamic-proxy-implementation-methods/v2-9cd31ab516bd967e1b8e68736931f8ba-720w.png)
 
 实际上可以换个角度，也说得通
 
-![](https://i.ibb.co/98484bR/v2-eddc430b991c58039dfc79dd6f3139cc-720w.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2021-12-29-java-dynamic-proxy-implementation-methods/v2-eddc430b991c58039dfc79dd6f3139cc-720w.jpg)
 
 所谓的Class对象，是Class类的实例，而Class类是描述所有类的，比如Person类，Student类
 
-![](https://i.ibb.co/KN19VHS/v2-c9bf695b1b9d2a0ae01cf92501492159-720w.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2021-12-29-java-dynamic-proxy-implementation-methods/v2-c9bf695b1b9d2a0ae01cf92501492159-720w.jpg)
 
 可以看出，要创建一个实例，最关键的就是得到**对应的Class对象**。只不过对于初学者来说，new这个关键字配合构造方法，实在太好用了，底层隐藏了太多细节，一句 Person p = new Person();直接把对象返回给你了。我自己刚开始学Java时，也没意识到Class对象的存在。
 
@@ -51,7 +51,7 @@ tags: [Java]
 
 Class对象包含了一个类的所有信息，比如构造器、方法、字段等。如果我们不写代理类，这些信息从哪获取呢？苦思冥想，突然灵光一现：代理类和目标类理应实现同一组接口。之所以实现相同接口，是为了尽可能保证代理对象的内部结构和目标对象一致，这样我们对代理对象的操作最终都可以转移到目标对象身上，代理对象只需专注于增强代码的编写。还是上面这幅图：
 
-![](https://i.ibb.co/KqbKyXs/v2-e302487f952bdf8e284afc0d8d6a770b-720w.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2021-12-29-java-dynamic-proxy-implementation-methods/v2-e302487f952bdf8e284afc0d8d6a770b-720w.jpg)
 
 所以，可以这样说：接口拥有代理对象和目标对象共同的类信息。所以，我们可以从接口那得到理应由代理类提供的信息。但是别忘了，接口是无法创建对象的，怎么办？
 

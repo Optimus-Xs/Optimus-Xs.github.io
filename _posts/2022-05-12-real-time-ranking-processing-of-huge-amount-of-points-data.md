@@ -68,7 +68,7 @@ SELECT uid, 积分 FROM 积分表 ORDER BY 积分 DESC LIMIT 0,N
 ## 根据积分范围创建平衡二叉树
 设[0, N]为积分范围， 构造的平衡二叉树如下图。
 
-![](https://i.ibb.co/h1MTCFN/20130511193900001.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-12-real-time-ranking-processing-of-huge-amount-of-points-data/20130511193900001.jpg)
 
 每个节点包含两个数据字段（除了指针）：
 
@@ -83,7 +83,7 @@ SELECT uid, 积分 FROM 积分表 ORDER BY 积分 DESC LIMIT 0,N
 
 节点内的数据表示当前积分区间的人数。
 
-![](https://i.ibb.co/BsKyjgZ/20130511193955547.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-12-real-time-ranking-processing-of-huge-amount-of-points-data/20130511193955547.jpg)
 
 从上图可以看出来，所有积分都在叶子节点，叶子节点即最小粒度的积分区间。
 
@@ -101,19 +101,19 @@ SELECT uid, 积分 FROM 积分表 ORDER BY 积分 DESC LIMIT 0,N
 
 例： 需要添加积分3， 结果如下图
 
-![](https://i.ibb.co/fYSBNcy/20130511194126404.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-12-real-time-ranking-processing-of-huge-amount-of-points-data/20130511194126404.jpg)
 
 接着在添加积分4，结果如下图
 
-![](https://i.ibb.co/MSFvFFg/20130511194153404.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-12-real-time-ranking-processing-of-huge-amount-of-points-data/20130511194153404.jpg)
 
 接着再添加积分4，结果如下图
 
-![](https://i.ibb.co/CQYdTMy/20130511194225027.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-12-real-time-ranking-processing-of-huge-amount-of-points-data/20130511194225027.jpg)
 
 接着添加积分2，结果如下图
 
-![](https://i.ibb.co/bJJLQz2/20130511194252168.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-12-real-time-ranking-processing-of-huge-amount-of-points-data/20130511194252168.jpg)
 
 ### 删除积分
 删除积分的过程也是查找积分i， 区别是查找过程经过的节点计数全部减1。
@@ -123,7 +123,7 @@ SELECT uid, 积分 FROM 积分表 ORDER BY 积分 DESC LIMIT 0,N
 
 例子： 删除积分4， 结果如下图
 
-![](https://i.ibb.co/SJtXj96/20130511194328136.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-12-real-time-ranking-processing-of-huge-amount-of-points-data/20130511194328136.jpg)
 
 ## 查询名次操作
 查询某个积分的排名的过程也是查找积分i的过程，下面是查找过程统计节点计数的算法：
@@ -134,7 +134,7 @@ SELECT uid, 积分 FROM 积分表 ORDER BY 积分 DESC LIMIT 0,N
 
 例子： 查找积分3的名次
 
-![](https://i.ibb.co/cY01b7h/20130511194428134.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-12-real-time-ranking-processing-of-huge-amount-of-points-data/20130511194428134.jpg)
 
 蓝色节点是查找积分3经过的路径，红色节点是需要累加的计数值。
 

@@ -53,12 +53,12 @@ static int hash(int h) {
 
 所谓 “拉链法” 就是：将链表和数组相结合。也就是说创建一个链表数组，数组中每个格就是一个链表。若遇到哈希冲突，则将冲突键值以头插或者尾插的方式插入数组下标所在的链表。
 
-![](https://i.ibb.co/8D77Yyd/816762-20210303102042048-1066595758.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-03-the-principle-of-hashmap-and-dynamic-scaling/816762-20210303102042048-1066595758.jpg)
 _JDK1.8之前的内部结构_
 
 相比于之前的版本， JDK1.8之后在解决哈希冲突时有了较大的变化，当链表长度大于阈值（默认为8）时且数组长度不小于64时，将链表转化为红黑树，以减少搜索时间。
 
-![](https://i.ibb.co/1R5t9c9/20181120170735304.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-03-the-principle-of-hashmap-and-dynamic-scaling/20181120170735304.jpg)
 _JDK1.8之后的HashMap底层数据结构_
 
 TreeMap、TreeSet以及JDK1.8之后的HashMap底层都用到了红黑树。红黑树就是为了解决二叉查找树的缺陷，因为二叉查找树在某些情况下会退化成一个线性结构。

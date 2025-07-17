@@ -16,7 +16,7 @@ NAT 大家应该十分熟悉了，它分为几种。一种就叫做 NAT，它只
 
 下面就简单介绍一下 NAT 的工作原理：
 
-![NAT结构](https://i.ibb.co/F673yW2/v2-62cb7ac6f3ef6272314dfe0a822b35a3-720w-jpg.png)
+![NAT结构](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-18-udp-hole-punching-analysis/v2-62cb7ac6f3ef6272314dfe0a822b35a3-720w-jpg.png)
 
 首先，NAT A 网下的设备 1（192.168.1.101）想与某公网 IP 通讯，设备 1 将包发给 NAT A，然后 NAT A 对源 IP 进行转换发给 NAT B（中间可能还会经过多重 NAT）。
 
@@ -30,7 +30,7 @@ NAT 大家应该十分熟悉了，它分为几种。一种就叫做 NAT，它只
 
 下面我们来看看 UDP 打洞是怎么解决这个问题的。
 
-![NAT中转结构](https://i.ibb.co/FxF3y2v/v2-52767d1e9ac42d6416025fc5080016d7-720w.png)
+![NAT中转结构](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-18-udp-hole-punching-analysis/v2-52767d1e9ac42d6416025fc5080016d7-720w.png)
 
 为了能够进行 UDP 打洞，我们需要一台公网的服务器作为中转站，它是 NAT A 与 NAT B 之间的信使。
 
@@ -40,7 +40,7 @@ NAT 大家应该十分熟悉了，它分为几种。一种就叫做 NAT，它只
 
 然后设备 1 与设备 2 都向 S 获取对方的公网 IP 与之前预留的端口号，就像这样：
 
-![NAT打洞结构](https://i.ibb.co/8gFHBGP/v2-6e2bb16c9c7c4a7ad9e1807a8648e02f-720w.png)
+![NAT打洞结构](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-18-udp-hole-punching-analysis/v2-6e2bb16c9c7c4a7ad9e1807a8648e02f-720w.png)
 
 然后就是最关键的一步，打洞。
 

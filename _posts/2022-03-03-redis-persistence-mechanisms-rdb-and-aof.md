@@ -9,19 +9,19 @@ tags: [Redis, DataBase]
 # 什么是Redis持久化
 Redis作为一个键值对内存数据库(NoSQL)，数据都存储在内存当中，在处理客户端请求时，所有操作都在内存当中进行，如下所示：
 
-![](https://i.ibb.co/2tCw5nV/java5-1566526018.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-03-redis-persistence-mechanisms-rdb-and-aof/java5-1566526018.jpg)
 
 这样做有什么问题呢？
 
 其实，只要稍微有点计算机基础知识的人都知道，存储在内存当中的数据，只要服务器关机(各种原因引起的)，内存中的数据就会消失了，不仅服务器关机会造成数据消失，Redis服务器守护进程退出，内存中的数据也一样会消失。
 
-![](https://i.ibb.co/XJYtc66/java1-1566526019.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-03-redis-persistence-mechanisms-rdb-and-aof/java1-1566526019.jpg)
 
 对于只把Redis当缓存来用的项目来说，数据消失或许问题不大，重新从数据源把数据加载进来就可以了，但如果直接把用户提交的业务数据存储在Redis当中，把Redis作为数据库来使用，在其放存储重要业务数据，那么Redis的内存数据丢失所造成的影响也许是毁灭性。
 
 为了避免内存中数据丢失，Redis提供了对持久化的支持，我们可以选择不同的方式将数据从内存中保存到硬盘当中，使数据可以持久化保存。
 
-![](https://i.ibb.co/qk5sCKr/java3-1566526019.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-03-redis-persistence-mechanisms-rdb-and-aof/java3-1566526019.jpg)
 
 Redis提供了RDB和AOF两种不同的数据持久化方式，下面我们就来详细介绍一下这种不同的持久化方式吧。
 
@@ -37,7 +37,7 @@ save命令是一个同步操作。
 > save 
 ```
 
-![](https://i.ibb.co/tKQ4yGZ/java4-1566526019.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-03-redis-persistence-mechanisms-rdb-and-aof/java4-1566526019.jpg)
 
 当客户端向服务器发送save命令请求进行持久化时，服务器会阻塞save命令之后的其他客户端的请求，直到数据同步完成。
 
@@ -50,7 +50,7 @@ save命令是一个同步操作。
 > bgsave
 ```
 
-![](https://i.ibb.co/K0GF2rn/java5-1566526019.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-03-redis-persistence-mechanisms-rdb-and-aof/java5-1566526019.jpg)
 
 当客户端发服务发出bgsave命令时，Redis服务器主进程会forks一个子进程来数据同步问题，在将数据保存到rdb文件之后，子进程会退出。
 
@@ -112,7 +112,7 @@ dir ~/redis/
 
 与RDB存储某个时刻的快照不同，AOF持久化方式会记录客户端对服务器的每一次写操作命令，并将这些写操作以Redis协议追加保存到以后缀为aof文件末尾，在Redis服务器重启时，会加载并运行aof文件的命令，以达到恢复数据的目的。
 
-![](https://i.ibb.co/tzDrgKC/java9-1566526020.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-03-redis-persistence-mechanisms-rdb-and-aof/java9-1566526020.jpg)
 
 ## 开启AOF持久化方式
 Redis默认不开启AOF持久化方式，我们可以在配置文件中开启并进行更加详细的配置，如下面的redis.conf文件：
@@ -178,7 +178,7 @@ no-appendfsync-on-rewrite no
 ```
 AOF重写方式也是异步操作，即如果要写入aof文件，则Redis主进程会forks一个子进程来处理，如下所示：
 
-![](https://i.ibb.co/S0bD16D/java10-1566526020.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-03-redis-persistence-mechanisms-rdb-and-aof/java10-1566526020.jpg)
 
 重写aof文件的好处
 

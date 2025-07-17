@@ -12,23 +12,23 @@ math: true
 # 跳表的基本思想
 首先，跳表处理的是有序的链表（一般是双向链表，下图未表示双向），如下：
 
-![](https://pic.stackoverflow.wiki/uploadImages/125/80/187/251/2022/06/03/19/22/9788d877-3ddb-46bc-aa35-332db1d559bd.svg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-28-skip-list-principle/9788d877-3ddb-46bc-aa35-332db1d559bd.svg)
 
 这个链表中，如果要搜索一个数，需要从头到尾比较每个元素是否匹配，直到找到匹配的数为止，即时间复杂度是 O(n)。同理，插入一个数并保持链表有序，需要先找到合适的插入位置，再执行插入，总计也是 O(n) 的时间。
 
 那么如何提高搜索的速度呢？很简单，做个索引：
 
-![](https://pic.stackoverflow.wiki/uploadImages/125/80/187/251/2022/06/03/19/22/9788d877-3ddb-46bc-aa35-332db1d559bd.svg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-28-skip-list-principle/9788d877-3ddb-46bc-aa35-332db1d559bd.svg)
 
 如上图，我们新创建一个链表，它包含的元素为前一个链表的偶数个元素。这样在搜索一个元素时，我们先在上层链表进行搜索，当元素未找到时再到下层链表中搜索。例如搜索数字 19 时的路径如下图：
 
-![](https://pic.stackoverflow.wiki/uploadImages/125/80/187/251/2022/06/03/19/23/7eedb106-d73c-422a-b3da-3b6a4417e1df.svg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-28-skip-list-principle/7eedb106-d73c-422a-b3da-3b6a4417e1df.svg)
 
 先在上层中搜索，到达节点 17 时发现下一个节点为 21，已经大于 19，于是转到下一层搜索，找到的目标数字 19。
 
 我们知道上层的节点数目为 n/2，因此，有了这层索引，我们搜索的时间复杂度降为了：O(n/2)。同理，我们可以不断地增加层数，来减少搜索的时间：
 
-![](https://pic.stackoverflow.wiki/uploadImages/125/80/187/251/2022/06/03/19/23/27cd4e1a-ac8c-4f2e-8224-47af0efc2b9f.svg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-28-skip-list-principle/27cd4e1a-ac8c-4f2e-8224-47af0efc2b9f.svg)
 
 在上面的 4 层链表中搜索 25，在最上层搜索时就可以直接跳过 21 之前的所有节点，因此十分高效。
 
@@ -40,13 +40,13 @@ math: true
 
 因此跳表（skip list）表示，我们就不强制要求 1:2 了，一个节点要不要被索引，建几层的索引，都在节点插入时由抛硬币决定。当然，虽然索引的节点、索引的层数是随机的，为了保证搜索的效率，要大致保证每层的节点数目与上节的结构相当。下面是一个随机生成的跳表：
 
-![](https://pic.stackoverflow.wiki/uploadImages/125/80/187/251/2022/06/03/19/24/f94a9b47-d4fa-4617-87a3-e31809863058.svg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-28-skip-list-principle/f94a9b47-d4fa-4617-87a3-e31809863058.svg)
 
 可以看到它每层的节点数还和上节的结构差不多，但是上下层的节点的对应关系已经完全被打破了。
 
 现在假设节点 17 是最后插入的，在插入之前，我们需要搜索得到插入的位置：
 
-![](https://pic.stackoverflow.wiki/uploadImages/125/80/187/251/2022/06/03/19/24/82c132b9-0235-4472-a1a3-820f621b5e5d.svg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-28-skip-list-principle/82c132b9-0235-4472-a1a3-820f621b5e5d.svg)
 
 接着，抛硬币决定要建立几层的索引，伪代码如下：
 
@@ -61,7 +61,7 @@ randomLevel()
 
 上面的伪代码相当于抛硬币，如果是正面`（random() < p）`则层数加一，直到抛出反面为止。其中的 MaxLevel 是防止如果运气太好，层数就会太高，而太高的层数往往并不会提供额外的性能，一般 $ MaxLevel=log_{1/p} n $。现在假设 `randomLevel` 返回的结果是 2，那么就得到下面的结果。
 
-![](https://pic.stackoverflow.wiki/uploadImages/125/80/187/251/2022/06/03/19/24/f5d9834c-b32c-4a1d-8af3-d3ed9fa6bd99.svg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-28-skip-list-principle/f5d9834c-b32c-4a1d-8af3-d3ed9fa6bd99.svg)
 
 如果要删除节点，则把节点和对应的所有索引节点全部删除即可。当然，要删除节点时需要先搜索得到该节点，搜索过程中可以把路径记录下来，这样删除索引层节点的时候就不需要多次搜索了。
 
@@ -101,7 +101,7 @@ $$ L_{max} = log_{1/p}n+1 = L(n) + 1 = O(log n) $$
 ## 搜索的时间复杂度
 为了计算搜索的时间复杂度，我们可以将查找的过程倒过来，从搜索最后的节点开始，一直向左或向上，直到最顶层。如下图，在路径上的每一点，都可能有两种情况：
 
-![](https://pic.stackoverflow.wiki/uploadImages/125/80/187/251/2022/06/03/19/37/51306f84-8322-4eb0-8b0c-606487fcee3e.svg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-28-skip-list-principle/51306f84-8322-4eb0-8b0c-606487fcee3e.svg)
 
 - 节点有上一层的节点，向上。这种情况出现的概率是 p。
 - 节点没有上一层的节点，向左。出现的概率是 1-p。

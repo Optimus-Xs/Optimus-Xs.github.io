@@ -39,7 +39,7 @@ void transferMoney(User from, User to, float amount){
 
 并行：多核cpu运行 多线程时，真正的在同一时刻运行
 
-![并发对比并行](https://i.ibb.co/k2HXt2R/a-HR0c-HM6-Ly9w-OS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C84-MWU5-OWUx-ODk3.png)
+![并发对比并行](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/a-HR0c-HM6-Ly9w-OS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C84-MWU5-OWUx-ODk3.png)
 
 Java提供了丰富的api来支持多线程。
 
@@ -153,7 +153,7 @@ log.info(target.get());
 ```
 以上各个线程相关的类的类图如下
 
-![线程相关的类的类图](https://i.ibb.co/SyfScfN/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C9l-Zj-U0-Yj-Qy-Zj.png)
+![线程相关的类的类图](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C9l-Zj-U0-Yj-Qy-Zj.png)
 
 ## 上下文切换
 多核cpu下，多线程是并行工作的，如果线程数多，单个核又会并发的调度线程,运行时会有上下文切换的概念
@@ -364,7 +364,7 @@ class TwoPhaseTerminal{
 线程的状态可从 操作系统层面分为五种状态 从Java api层面分为六种状态。
 
 ### 五种状态
-![线程五种状态](https://i.ibb.co/Hq3WS80/M44-KQ8-VFEG1216-MTJ9-Q9-GK3-ID.png)
+![线程五种状态](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/M44-KQ8-VFEG1216-MTJ9-Q9-GK3-ID.png)
 
 1. 初始状态：创建线程对象时的状态
 2. 可运行状态(就绪状态)：调用start()方法后进入就绪状态，也就是准备好被cpu调度执行
@@ -374,7 +374,7 @@ class TwoPhaseTerminal{
 
 ### 六种状态
 
-![线程六种状态](https://i.ibb.co/1nqFD2n/1689841-383f7101e6588094.png)
+![线程六种状态](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/1689841-383f7101e6588094.png)
 
 ```java
 public enum State {
@@ -387,7 +387,7 @@ public enum State {
 }
 ```
 六种线程状态和方法的对应关系
-![线程六种状态方法](https://imgconvert.csdnimg.cn/aHR0cHM6Ly9wMy1qdWVqaW4uYnl0ZWltZy5jb20vdG9zLWNuLWktazN1MWZicGZjcC82MjI2NTkzMzdmY2E0NDZjOGNjYjRkZTZjMjZiMTJiNX50cGx2LWszdTFmYnBmY3Atem9vbS0xLmltYWdl?x-oss-process=image/format,png)
+![线程六种状态方法](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/aHR0cHM6Ly9wMy1qdWVqaW4uYnl0ZWltZy5jb20vdG9zLWNuLWktazN1MWZicGZjcC82MjI2NTkzMzdmY2E0NDZjOGNjYjRkZTZjMjZiMTJiNX50cGx2LWszdTFmYnBmY3Atem9vbS0xLmltYWdl.png)
 
 1. NEW 线程对象被创建
 2. Runnable 线程调用了start()方法后进入该状态，该状态包含了三种情况
@@ -598,7 +598,7 @@ wait()将线程进入阻塞状态，notify()将线程唤醒
 
 如下图所示 Thread0,1先竞争到锁执行了代码后，2,3,4,5线程同时来执行临界区的代码,开始竞争锁
 
-![](https://i.ibb.co/vv4M5jZ/a-HR0c-HM6-Ly9w-My1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C8z-Zj-A0-Zjlk-MTIw.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/a-HR0c-HM6-Ly9w-My1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C8z-Zj-A0-Zjlk-MTIw.png)
 
 1. Thread-0先获取到对象的锁，关联到monitor的owner，同步代码块内调用了锁对象的wait()方法，调用后会进入waitSet等待，Thread-1同样如此，此时Thread-0的状态为Waitting
 2. Thread2、3、4、5同时竞争，2获取到锁后，关联了monitor的owner，3、4、5只能进入EntryList中等待，此时2线程状态为 Runnable，3、4、5状态为Blocked
@@ -781,7 +781,7 @@ class Message {
 
 这时大堂里等待的人都来竞争锁，谁获取到谁进入继续取钱。
 
-![](https://i.ibb.co/r7g7bTb/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C9j-Nz-Zj-MGYw-Yzhk.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C9j-Nz-Zj-MGYw-Yzhk.png)
 
 和现实中不同的就是这里没有排队的概念，谁抢到锁谁进去取。
 
@@ -921,7 +921,7 @@ class AwaitSignal extends ReentrantLock {
 ## 死锁
 说到死锁,先举个例子，
 
-![](https://i.ibb.co/Dbgq2wS/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C85-MTVh-Yj-Rj-ZGE0.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C85-MTVh-Yj-Rj-ZGE0.png)
 
 下面是代码实现
 ```java
@@ -965,7 +965,7 @@ class Story{
 ```
 死锁导致程序无法正常运行下去
 
-![](https://i.ibb.co/RBMH3Bp/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C9h-ODE3-ODRh-ODQ0.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C9h-ODE3-ODRh-ODQ0.png)
 
 ## Java内存模型(JMM)
 JMM 体现在以下三个方面
@@ -992,7 +992,7 @@ public static void main(String[] args) throws InterruptedException {
 }
 ```
 
-![](https://i.ibb.co/y8ybwL6/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C9k-ODg4-MDA0-ZTBj.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C9k-ODg4-MDA0-ZTBj.png)
 
 如上图所示，线程有自己的工作缓存，当主线程修改了变量并同步到主内存时，t线程没有读取到，所以程序停不下来
 
@@ -1106,7 +1106,7 @@ AtomicStampedReference/AtomicMarkableReference
 - 提高响应速度，任务到达时，无需创建线程即可运行
 - 提供更多更强大的功能，可扩展性高
 
-![](https://i.ibb.co/wSq6Dm5/a-HR0c-HM6-Ly9w-OS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C85-ZGFh-MDM2-Nm-Y4.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/a-HR0c-HM6-Ly9w-OS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C85-ZGFh-MDM2-Nm-Y4.png)
 
 ## 线程池的构造方法
 ```java
@@ -1137,7 +1137,7 @@ public ThreadPoolExecutor(int corePoolSize,
 ## 线程池案例
 下面 我们通过一个实例来理解线程池的参数以及线程池的接收任务的过程
 
-![](https://i.ibb.co/Yhttnmq/a-HR0c-HM6-Ly9w-My1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C82-Yj-Ux-Nj-M1-OGI.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/a-HR0c-HM6-Ly9w-My1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C82-Yj-Ux-Nj-M1-OGI.png)
 
 如上图 银行办理业务。
 
@@ -1360,7 +1360,7 @@ public void setCorePoolSize(int corePoolSize) {
 }
 ```
 
-![](https://i.ibb.co/BwCC9rG/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C9l-Yj-Vk-OGRi-MDJl.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-11-27-java-multithreading-overview/a-HR0c-HM6-Ly9w-MS1qd-WVqa-W4u-Ynl0-ZWlt-Zy5jb20vd-G9z-LWNu-LWktaz-N1-MWZic-GZjc-C9l-Yj-Vk-OGRi-MDJl.png)
 
 **2.增加线程池的监控**
 

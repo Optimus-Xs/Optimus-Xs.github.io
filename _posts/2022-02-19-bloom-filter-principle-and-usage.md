@@ -17,25 +17,25 @@ math: true
 
 针对这个问题，你可以考虑使用哈希表。利用哈希表你可以通过对 “值” 进行哈希处理来获得该值对应的键或索引值，然后把该值存放到列表中对应的索引位置。这意味着索引值是由插入项的值所确定的，当你需要判断列表中是否存在该值时，只需要对值进行哈希处理并在相应的索引位置进行搜索即可，这时的搜索速度是非常快的。
 
-![](https://i.ibb.co/kK8hPVr/agvyq-2mjhj.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-19-bloom-filter-principle-and-usage/agvyq-2mjhj.png)
 
 根据定义，布隆过滤器可以检查值是 “可能在集合中” 还是 “绝对不在集合中”。“可能” 表示有一定的概率，也就是说可能存在一定为误判率。那为什么会存在误判呢？下面我们来分析一下具体的原因。
 
 布隆过滤器（Bloom Filter）本质上是由长度为 m 的位向量或位列表（仅包含 0 或 1 位值的列表）组成，最初所有的值均设置为 0，如下图所示。
 
-![](https://i.ibb.co/kSMWP0n/au5ys-121z6.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-19-bloom-filter-principle-and-usage/au5ys-121z6.png)
 
 为了将数据项添加到布隆过滤器中，我们会提供 K 个不同的哈希函数，并将结果位置上对应位的值置为 “1”。在前面所提到的哈希表中，我们使用的是单个哈希函数，因此只能输出单个索引值。而对于布隆过滤器来说，我们将使用多个哈希函数，这将会产生多个索引值。
 
-![](https://i.ibb.co/KWKnjWs/al6jj-f7sv9.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-19-bloom-filter-principle-and-usage/al6jj-f7sv9.png)
 
 如上图所示，当输入 “semlinker” 时，预设的 3 个哈希函数将输出 2、4、6，我们把相应位置 1。假设另一个输入 ”kakuqo“，哈希函数输出 3、4 和 7。你可能已经注意到，索引位 4 已经被先前的 “semlinker” 标记了。此时，我们已经使用 “semlinker” 和 ”kakuqo“ 两个输入值，填充了位向量。当前位向量的标记状态为：
 
-![](https://i.ibb.co/mHvYfcQ/azxbk-zu0no.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-19-bloom-filter-principle-and-usage/azxbk-zu0no.png)
 
 当对值进行搜索时，与哈希表类似，我们将使用 3 个哈希函数对 ”搜索的值“ 进行哈希运算，并查看其生成的索引值。假设，当我们搜索 ”fullstack“ 时，3 个哈希函数输出的 3 个索引值分别是 2、3 和 7：
 
-![](https://i.ibb.co/qsDFrws/ayr0l-5sbil.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-19-bloom-filter-principle-and-usage/ayr0l-5sbil.png)
 
 从上图可以看出，相应的索引位都被置为 1，这意味着我们可以说 ”fullstack“ 可能已经插入到集合中。事实上这是误报的情形，产生的原因是由于哈希碰撞导致的巧合而将不同的元素存储在相同的比特位上。幸运的是，布隆过滤器有一个可预测的误判率（FPP）：
 

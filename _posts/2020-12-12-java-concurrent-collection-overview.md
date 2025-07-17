@@ -17,7 +17,7 @@ Java 集合工具包在 Java.util 包下，它包含了常用的数据结构，�
 
 这里先放一张 Java 集合类的框架图：
 
-![Java 集合类的框架图](https://i.ibb.co/Tv3pCXp/1029728-20180804171528286-1773816723.png)
+![Java 集合类的框架图](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-12-12-java-concurrent-collection-overview/1029728-20180804171528286-1773816723.png)
 
 Collection 接口是集合类的根接口，Java 中没有提供这个接口的直接的实现类。但是让其被继承产生了两个接口，就是 Set 和 List。Set中不能包含重复的元素。List是一个有序的集合，可以包含重复的元素，提供了按索引访问的方式。
 
@@ -170,7 +170,7 @@ public class CopyOnWriteArrayList<E>
 
 SkipList即跳表，跳表是一种空间换时间的数据结构，通过冗余数据，将链表一层一层索引，达到类似二分查找的效果
 
-![](https://i.ibb.co/82BpBqx/mgu9fdr66l.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2020-12-12-java-concurrent-collection-overview/mgu9fdr66l.jpg)
 
 
 ## 7.ConcurrentSkipListSet 

@@ -22,7 +22,7 @@ tags: [DataBase]
 # Read uncommitted 读未提交
 公司发工资了，领导把5000元打到singo的账号上，但是该事务并未提交，而singo正好去查看账户，发现工资已经到账，是5000元整，非常高 兴。可是不幸的是，领导发现发给singo的工资金额不对，是2000元，于是迅速回滚了事务，修改金额后，将事务提交，最后singo实际的工资只有 2000元，singo空欢喜一场。
 
-![](https://i.ibb.co/3SpYP5n/4kq0mq0cks.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-08-database-transaction-isolation-level/4kq0mq0cks.png)
 
 出现上述情况，即我们所说的脏读 ，两个并发的事务，“事务A：领导给singo发工资”、“事务B：singo查询工资账户”，事务B读取了事务A尚未提交的数据。
 

@@ -17,7 +17,7 @@ B树也称B-树,它是一颗多路平衡查找树。我们描述一颗B树时需
 - 1每个结点中的关键字都按照从小到大的顺序排列，每个关键字的左子树中的所有关键字都小于它，而右子树中的所有关键字都大于它。
 - 1所有叶子结点都位于同一层，或者说根结点到每个叶子结点的长度都相同。
 
-![](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/275f5223-33b4-47c5-95a0-65e95b8761dc/834468-20180406232634472-395289491.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220602%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220602T124856Z&X-Amz-Expires=86400&X-Amz-Signature=88b19a2639481268abcb760b5c8e5928595d16afb5426ec9d01455a5f6c2d9fd&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22834468-20180406232634472-395289491.png%22&x-id=GetObject)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232634472-395289491.png)
 
 上图是一颗阶数为4的B树。在实际应用中的B树的阶数m都非常大（通常大于100），所以即使存储大量的数据，B树的高度仍然比较小。每个结点中存储了关键字（key）和关键字对应的数据（data），以及孩子结点的指针。我们将一个key和其对应的data称为一个记录。但为了方便描述，除非特别说明，后续文中就用key来代替（key, value）键值对这个整体。在数据库中我们将B树（和B+树）作为索引结构，可以加快查询速速，此时B树中的key就表示键，而data表示了这个键对应的条目在硬盘上的逻辑地址。
 
@@ -33,28 +33,28 @@ B树也称B-树,它是一颗多路平衡查找树。我们描述一颗B树时需
 下面以5阶B树为例，介绍B树的插入操作，在5阶B树中，结点最多有4个key,最少有2个key
 
 1. 在空树中插入39
-  <br>![](https://i.ibb.co/jkSjPg1/834468-20180406232637766-945625689.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232637766-945625689.png)<br>
   此时根结点就一个key，此时根结点也是叶子结点
 2. 继续插入22，97和41
-  <br>![](https://i.ibb.co/Yc2mbVy/834468-20180406232641280-907189483.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232641280-907189483.png)<br>
   根结点此时有4个key
 3. 继续插入53
-  <br>![](https://i.ibb.co/kxbYBRL/834468-20180406232644645-1214967776.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232644645-1214967776.png)<br>
   插入后超过了最大允许的关键字个数4，所以以key值为41为中心进行分裂，结果如下图所示，分裂后当前结点指针指向父结点，满足B树条件，插入操作结束。当阶数m为偶数时，需要分裂时就不存在排序恰好在中间的key，那么我们选择中间位置的前一个key或中间位置的后一个key为中心进行分裂即可。
-  <br>![](https://i.ibb.co/MR53tBH/834468-20180406232701452-1205325216.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232701452-1205325216.png)<br>
 4. 依次插入13，21，40，同样会造成分裂，结果如下图所示。
-  <br>![](https://i.ibb.co/zfS037m/834468-20180406232716269-1873273300.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232716269-1873273300.png)<br>
 5. 依次插入30，27, 33 ；36，35，34 ；24，29，结果如下图所示。
-  <br>![](https://i.ibb.co/dKgLHX6/834468-20180406232719931-1845157889.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232719931-1845157889.png)<br>
 6. 插入key值为26的记录，插入后的结果如下图所示。
-  <br>![](https://i.ibb.co/n7DYsKJ/834468-20180406232724001-1518264552.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232724001-1518264552.png)<br>
   当前结点需要以27为中心分裂，并向父结点进位27，然后当前结点指向父结点，结果如下图所示。
-  <br>![](https://i.ibb.co/p4f52yy/834468-20180406232732844-330586131.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232732844-330586131.png)<br>
   分裂后当前结点指向新的根，此时无需调整。
-  <br>![](https://i.ibb.co/fd9ChpH/834468-20180406232737701-1115673096.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232737701-1115673096.png)<br>
   分裂后当前结点指向新的根，此时无需调整。
 7. 最后再依次插入key为17,28,29,31,32的记录，结果如下图所示。
-  <br>![](https://i.ibb.co/Cb511JQ/834468-20180406232748270-1888091858.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232748270-1888091858.png)<br>
 
 在实现B树的代码中，为了使代码编写更加容易，我们可以将结点中存储记录的数组长度定义为m而非m-1，这样方便底层的结点由于分裂向上层插入一个记录时，上层有多余的位置存储这个记录。同时，每个结点还可以存储它的父结点的引用，这样就不必编写递归程序。
 
@@ -75,30 +75,30 @@ B树也称B-树,它是一颗多路平衡查找树。我们描述一颗B树时需
 
 
 1. 原始状态
-   <br>![](https://i.ibb.co/w6s4J5k/834468-20180406232754144-973589199.png)<br>
+   <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232754144-973589199.png)<br>
 2. 在上面的B树中删除21，删除后结点中的关键字个数仍然大于等2，所以删除结束。
-  <br>![](https://i.ibb.co/n1LM5tj/834468-20180406232800149-881832132.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232800149-881832132.png)<br>
 3. 在上述情况下接着删除27。从上图可知27位于非叶子结点中，所以用27的后继替换它。从图中可以看出，27的后继为28，我们用28替换27，然后在28（原27）的右孩子结点中删除28。删除后的结果如
-  <br>![](https://i.ibb.co/nnH4nzv/834468-20180406232805316-736624542.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232805316-736624542.png)<br>
   删除后发现，当前叶子结点的记录的个数小于2，而它的兄弟结点中有3个记录（当前结点还有一个右兄弟，选择右兄弟就会出现合并结点的情况，不论选哪一个都行，只是最后B树的形态会不一样而已），我们可以从兄弟结点中借取一个key。所以父结点中的28下移，兄弟结点中的26上移,删除结束。结果如下图所示。
-  <br>![](https://i.ibb.co/Z8gQhqS/834468-20180406232813762-797146286.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232813762-797146286.png)<br>
 4. 在上述情况下接着32，结果如下图。
-  <br>![](https://i.ibb.co/Gx1vyXg/834468-20180406232817843-722364883.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232817843-722364883.png)<br>
   当删除后，当前结点中只key，而兄弟结点中也仅有2个key。所以只能让父结点中的30下移和这个两个孩子结点中的key合并，成为一个新的结点，当前结点的指针指向父结点。结果如下图所示。
-  <br>![](https://i.ibb.co/LSnLMv1/834468-20180406232829066-149754287.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232829066-149754287.png)<br>
   当前结点key的个数满足条件，故删除结束。
 5. 上述情况下，我们接着删除key为40的记录，删除后结果如下图所示。
-  <br>![](https://i.ibb.co/cyXjK0r/834468-20180406232837287-2101391374.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232837287-2101391374.png)<br>
   同理，当前结点的记录数小于2，兄弟结点中没有多余key，所以父结点中的key下移，和兄弟（这里我们选择左兄弟，选择右兄弟也可以）结点合并，合并后的指向当前结点的指针就指向了父结点。
-  <br>![](https://i.ibb.co/jwnbfvy/834468-20180406232846836-538278275.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232846836-538278275.png)<br>
   同理，对于当前结点而言只能继续合并了，最后结果如下所示。
-  <br>![](https://i.ibb.co/MG8gFKq/834468-20180406232851299-447892778.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232851299-447892778.png)<br>
   合并后结点当前结点满足条件，删除结束。
 
 
 # B+树
 ## B+树的定义
-<br>![](https://i.ibb.co/WKkFLkh/834468-20180406232854940-1019144331.png)<br>
+<br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232854940-1019144331.png)<br>
 各种资料上B+树的定义各有不同，一种定义方式是关键字个数和孩子结点个数相同。这里我们采取维基百科上所定义的方式，即关键字个数比孩子结点个数小1，这种方式是和B树基本等价的。上图就是一颗阶数为4的B+树。
 
 除此之外B+树还有以下的要求。
@@ -120,29 +120,29 @@ B树也称B-树,它是一颗多路平衡查找树。我们描述一颗B树时需
 下面是一颗5阶B树的插入过程，5阶B数的结点最少2个key，最多4个key。
 
 1. 空树中插入5
-  <br>![](https://i.ibb.co/HHtjbt6/834468-20180406232858129-694616618.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232858129-694616618.png)<br>
 2. 依次插入8，10，15
-  <br>![](https://i.ibb.co/BVhHrk1/834468-20180406232901391-1401289774.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232901391-1401289774.png)<br>
 3. 插入16
-  <br>![](https://i.ibb.co/4VDPM4J/834468-20180406232905559-1698012761.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232905559-1698012761.png)<br>
   插入16后超过了关键字的个数限制，所以要进行分裂。在叶子结点分裂时，分裂出来的左结点2个记录，右边3个记录，中间key成为索引结点中的key，分裂后当前结点指向了父结点（根结点）。结果如下图所示。
-  <br>![](https://i.ibb.co/DMmVwyj/834468-20180406232909712-1807724284.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232909712-1807724284.png)<br>
   当然我们还有另一种分裂方式，给左结点3个记录，右结点2个记录，此时索引结点中的key就变为15。
 4. 插入17
-  <br>![](https://i.ibb.co/8ztKZxL/834468-20180406232913379-576202883.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232913379-576202883.png)<br>
 5. 插入18，插入后如下图所示
-  <br>![](https://i.ibb.co/Ny8N1nb/834468-20180406232917817-1240573630.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232917817-1240573630.png)<br>
   当前结点的关键字个数大于5，进行分裂。分裂成两个结点，左结点2个记录，右结点3个记录，关键字16进位到父结点（索引类型）中，将当前结点的指针指向父结点。
-  <br>![](https://i.ibb.co/dkrRHZq/834468-20180406232921679-618565224.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232921679-618565224.png)<br>
   当前结点的关键字个数满足条件，插入结束。
 6. 插入若干数据后
-  <br>![](https://i.ibb.co/xFRd5VD/834468-20180406232935105-1001982143.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232935105-1001982143.png)<br>
 7. 在上图中插入7，结果如下图所示
-  <br>![](https://i.ibb.co/xFRd5VD/834468-20180406232935105-1001982143.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232935105-1001982143.png)<br>
   当前结点的关键字个数超过4，需要分裂。左结点2个记录，右结点3个记录。分裂后关键字7进入到父结点中，将当前结点的指针指向父结点，结果如下图所示。
-  <br>![](https://i.ibb.co/KNVTVYh/834468-20180406232940557-1204742223.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232940557-1204742223.png)<br>
   当前结点的关键字个数超过4，需要继续分裂。左结点2个关键字，右结点2个关键字，关键字16进入到父结点中，将当前结点指向父结点，结果如下图所示。
-  <br>![](https://i.ibb.co/CP50kkd/834468-20180406232945267-543224744.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232945267-543224744.png)<br>
   当前结点的关键字个数满足条件，插入结束。
 
 ## B+树的删除操作
@@ -160,20 +160,20 @@ B树也称B-树,它是一颗多路平衡查找树。我们描述一颗B树时需
 下面是一颗5阶B树的删除过程，5阶B数的结点最少2个key，最多4个key。
 
 1. 初始状态
-  <br>![](https://i.ibb.co/MMzBrsL/834468-20180406232951603-2095664521.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232951603-2095664521.png)<br>
 2. 删除22,删除后结果如下图
-  <br>![](https://i.ibb.co/WpJyw4C/834468-20180406232956857-909502342.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232956857-909502342.png)<br>
   删除后叶子结点中key的个数大于等于2，删除结束  
 3. 删除15，删除后的结果如下图所示
-  <br>![](https://i.ibb.co/zHRpgdN/834468-20180406233002074-155906598.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406233002074-155906598.png)<br>
   删除后当前结点只有一个key,不满足条件，而兄弟结点有三个key，可以从兄弟结点借一个关键字为9的记录,同时更新将父结点中的关键字由10也变为9，删除结束。
-  <br>![](https://i.ibb.co/7p8ySRc/834468-20180406233008129-433585803.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406233008129-433585803.png)<br>
 4. 删除7，删除后的结果如下图所示
-  <br>![](https://i.ibb.co/XS2SW8r/834468-20180406233017339-92051658.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406233017339-92051658.png)<br>
   当前结点关键字个数小于2，（左）兄弟结点中的也没有富余的关键字（当前结点还有个右兄弟，不过选择任意一个进行分析就可以了，这里我们选择了左边的），所以当前结点和兄弟结点合并，并删除父结点中的key，当前结点指向父结点。
-  <br>![](https://i.ibb.co/Cz19jXT/834468-20180406233022828-172757536.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406233022828-172757536.png)<br>
   此时当前结点的关键字个数小于2，兄弟结点的关键字也没有富余，所以父结点中的关键字下移，和两个孩子结点合并，结果如下图所示。
-  <br>![](https://i.ibb.co/BjnfSZy/834468-20180406233027773-1578264573.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406233027773-1578264573.png)<br>
 
 
 # 参考内容

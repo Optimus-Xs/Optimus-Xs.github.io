@@ -81,7 +81,7 @@ update VM 200: -sata0 /dev/disk/by-id/ata-ST1000DM003-1****2_W********7
 ## 检查
 然后进入PVE虚拟机管理网页,查看是否真的挂载成功。
 
-![](https://i.ibb.co/NmQbKqp/QQ-20220614145816.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-06-14-passthrough-hard-drive-in-proxmox-ve/QQ-20220614145816.jpg)
 
 如果看到PVE 200 虚拟机下的硬件设备里有直通的硬盘,就说明成功。如上图中所示，如果有橘黄色字体显示该设置并未生效，请从PVE控制台的重启虚拟机后生效。
 
@@ -96,4 +96,4 @@ Proxmox VE(PVE)系统直通SATA Controller(SATA 控制器)，会把整个sata总
 
 选择需要设置的PVE系统，点击 硬件 > 添加 > PCI设备 > 选择 SATA Controller（SATA 控制器），最后点击“添加”把 SATA Controller（SATA 控制器）添加给相应的系统后，完成重启，PVE硬件直通的设置就生效了。
 
-![](https://i.ibb.co/fqT4cdF/QQ-20220614150604.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-06-14-passthrough-hard-drive-in-proxmox-ve/QQ-20220614150604.jpg)

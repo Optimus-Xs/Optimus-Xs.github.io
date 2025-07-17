@@ -19,14 +19,14 @@ tags: [Data Structure]
 - 堆是一种完全二叉树，要注意堆是一种建立在二叉树上的数据结构，不同于AVL或者红黑树是建立在二分搜索树上的数据结构。
 - 堆要求孩子节点要大于等于父亲节点，该定义是针对的最大堆。对于最小堆，孩子节点小于或者等于其父亲节点。
 
-![](https://i.ibb.co/rv5jrBD/1635748-20190822143009280-1059868436.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-03-principle-and-implementation-of-heaps/1635748-20190822143009280-1059868436.png)
 
 如上所示，只有图1是合格的最大堆，图2不满足父节点大于或者等于孩子节点的性质。图3不满足完全二叉树的性质。
 
 ## 堆的存储结构
 前面我们说堆是一个完全二叉树，其中一种在合适不过的存储方式就是数组。首先从下图看一下用数组表示堆的可行性。
 
-![](https://i.ibb.co/Z6ryJs6/1635748-20190822150256478-1445219636.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-03-principle-and-implementation-of-heaps/1635748-20190822150256478-1445219636.png)
 
 看了上图，说明数组确实是可以表示一个二叉堆的。使用数组来存储堆的节点信息，有一种天然的优势那就是节省内存空间。因为数组占用的是连续的内存空间，相对来说对于散列存储的结构来说，数组可以节省连续的内存空间，不会将内存打乱。
 
@@ -103,15 +103,15 @@ tags: [Data Structure]
 
 堆中插入元素意味着该堆的性质可能遭到破坏，所以这是如同向AVL中插入元素后需要再平衡是一个道理，需要调整堆中元素的位置，使之重新满足堆的性质。在最大二叉堆中，要堆化一个元素，需要向上查找，找到它的父节点，大于父节点则交换两个元素，重复该过程直到每个节点都满足堆的性质为止。这个过程我们称之为上浮操作。下面我们用图例描述一下这个过程：
 
-![](https://i.ibb.co/F3Y6Fzg/1635748-20190822160151706-1386885183.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-03-principle-and-implementation-of-heaps/1635748-20190822160151706-1386885183.png)
 
 如上图5所示，我们向该堆中插入一个元素15。在数组中位于数组尾部。
 
-![](https://i.ibb.co/3WbF4Rx/1635748-20190822160235595-1590758439.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-03-principle-and-implementation-of-heaps/1635748-20190822160235595-1590758439.png)
 
 如图6所示，向上查找，发现15大于它的父节点，所以进行交换。
 
-![](https://i.ibb.co/tp9nVRr/1635748-20190822160750028-432052011.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-03-principle-and-implementation-of-heaps/1635748-20190822160750028-432052011.png)
 
 如图7所示，继续向上查找，发现仍大于其父节点14。继续交换。
 
@@ -146,17 +146,17 @@ private void siftUp(int k) {
 ## 取出堆顶元素和下沉 sift down
 上面我们介绍了插入和上浮操作，那删除和下沉操作将不再是什么难题。一般的如果我们取出堆顶元素，我们选择将该数组中的最后一个元素替换堆顶元素，返回堆顶元素，删除最后一个元素。然后再对该元素做下沉操作 sift down。接下来我们通过图示看看一下过程。
 
-![](https://i.ibb.co/0G7hKpv/1635748-20190822162211163-1593824582.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-03-principle-and-implementation-of-heaps/1635748-20190822162211163-1593824582.png)
 
-![](https://i.ibb.co/QKQds1m/1635748-20190822162351830-785592047.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-03-principle-and-implementation-of-heaps/1635748-20190822162351830-785592047.png)
 
 如上图8所示，将堆顶元素取出，然后让最后一个元素移动到堆顶位置。删除最后一个元素，这时得到图9的结果。
 
-![](https://i.ibb.co/Bj00KNt/1635748-20190822163041732-279961709.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-03-principle-and-implementation-of-heaps/1635748-20190822163041732-279961709.png)
 
 如图10，堆顶的9元素会分别和其左右孩子节点进行比较，选出较大的孩子节点和其进行交换。很明显右孩子17大于左孩子15。即和右孩子进行交换。
 
-![](https://i.ibb.co/hVBBGXd/1635748-20190822163430896-934961142.png)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-05-03-principle-and-implementation-of-heaps/1635748-20190822163430896-934961142.png)
 
 如图11，9节点继续下沉最终和其左孩子12交换后，再没有孩子节点。此次过程的下沉操作完成。下沉操作的时间复杂度为O(logn)
 

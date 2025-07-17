@@ -27,7 +27,7 @@ tags: [OpenWRT, GeekDairy]
 - 修改文件的时候会占用更多的空间。首先你不能够删除文件，因为删除文件实际上是在 `overlay` 分区中写入一个删除的标识，反而占用更多的空间。
 - 另外在修改文件的时候相当于增加了一份文件的副本，占用了双份的空间。
 
-![overlay 示意图](https://i.ibb.co/r00Tj4m/overlay.webp)
+![overlay 示意图](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-13-openwrt-overlay-space-expansion/overlay.webp)
 
 
 # 创建新分区
@@ -45,7 +45,7 @@ cfdisk
 ```
 打开磁盘管理界面：
 
-![磁盘界面](https://i.ibb.co/Ns9qzhP/cfdisk.webp)
+![磁盘界面](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-13-openwrt-overlay-space-expansion/cfdisk.webp)
 _磁盘界面_
 
 这里可以看到，目前一共有两个已有分区，现在新建一个分区：
@@ -54,17 +54,17 @@ _磁盘界面_
 
 接着选择 `primary`
 
-![选择主分区](https://i.ibb.co/3CcQ6QH/primary.webp)
+![选择主分区](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-13-openwrt-overlay-space-expansion/primary.webp)
 _选择主分区_
 
 选择 `Write`
 
-![写入更改](https://i.ibb.co/8nCTcF9/write.webp)
+![写入更改](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-13-openwrt-overlay-space-expansion/write.webp)
 _写入更改_
 
 输入 `yes`，完成新分区的创建
 
-![确认](https://i.ibb.co/2vLMy0K/yes.webp)
+![确认](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-13-openwrt-overlay-space-expansion/yes.webp)
 _确认_
 
 # 格式化分区
@@ -74,7 +74,7 @@ mkfs.ext4 /dev/sda3
 ```
 格式化分区
 
-![格式化分区](https://i.ibb.co/z86fCcC/format.webp)
+![格式化分区](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-13-openwrt-overlay-space-expansion/format.webp)
 _格式化分区_
 
 
@@ -96,12 +96,12 @@ cp -r /overlay/* /mnt/sda3
 # Web 界面配置修改
 进入 `OpenWRT` Web 界面的`挂载点`对配置进行修改：
 
-![Web 界面](https://i.ibb.co/hg4XtKP/openwrt.webp)
+![Web 界面](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-13-openwrt-overlay-space-expansion/openwrt.webp)
 _Web 界面_
 
 在`挂载点`下方点击`添加`，然后如下配置：
 
-![挂载点配置](https://i.ibb.co/9hQwK3Z/mountpoint.webp)
+![挂载点配置](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-03-13-openwrt-overlay-space-expansion/mountpoint.webp)
 _挂载点配置_
 
 

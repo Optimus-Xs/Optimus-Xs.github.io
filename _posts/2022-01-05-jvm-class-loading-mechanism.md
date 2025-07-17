@@ -13,7 +13,7 @@ Java虚拟机把描述类的数据从Class文件加载到内存，并对数据�
 # 类的生命周期
 类从被加载到虚拟机内存中开始，到卸载出内存为止，它的整个生命周期包括：加载，验证，准备，解析，初始化,使用,卸载这7个阶段.其中其中验证、准备、解析3个部分统称为连接.
 
-![](https://i.ibb.co/ZKdMDqT/007-S8-ZIlly1gi5eqpkg4cj312m0dyjvn.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-05-jvm-class-loading-mechanism/007-S8-ZIlly1gi5eqpkg4cj312m0dyjvn.jpg)
 
 加载、验证、准备、初始化和卸载这五个阶段的顺序是确定的，类型的加载过程必须按照这种顺序按部就班地开始，而解析阶段则不一定：它在某些情况下可以在初始化阶段之后再开始，这是为了支持Java语言的运行时绑定特性（也称为动态绑定或晚期绑定）
 
@@ -27,7 +27,7 @@ Java虚拟机把描述类的数据从Class文件加载到内存，并对数据�
 2. 将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构。
 3. 在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的访问入口。
 
-![](https://i.ibb.co/hR72Pbx/007-S8-ZIlly1gi57jiyydxj30ya0icdiw.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-05-jvm-class-loading-mechanism/007-S8-ZIlly1gi57jiyydxj30ya0icdiw.jpg)
 
 ### 验证：确保被加载的类的正确性
 验证是连接阶段的第一步，这一阶段的目的是为了确保Class文件的字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。验证阶段大致会完成4个阶段的检验动作:
@@ -109,7 +109,7 @@ Java虚拟机将结束生命周期的几种情况
 虚拟机设计团队把类加载阶段中的“通过一个类的全限定名来获取描述此类的二进制字节流”这个动作放到Java虚拟机外部去实现，以便让应用程序自己决定如何去获取所需要的类。 实现这个动作的代码模块称为“类加载器”。
 
 ## 类加载器的层次
-![](https://i.ibb.co/6yt9FvP/007-S8-ZIlly1gi5f30yg36j30vx0u0n9z.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-05-jvm-class-loading-mechanism/007-S8-ZIlly1gi5f30yg36j30vx0u0n9z.jpg)
 
 双亲委派模型要求除了顶层的启动类加载器外，其余的类加载器都应有自己的父类加载器。不过这里类加载器之间的父子关系一般不是以继承（Inheritance）的关系来实现的，而是通常使用组合（Composition）关系来复用父加载器的代码。
 
@@ -184,7 +184,7 @@ public class Test2 {
 
 ### 类的双亲委派机制
 
-![](https://i.ibb.co/mRqP5k6/007-S8-ZIlly1gi5bpc7h03j30u00xkb29.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-05-jvm-class-loading-mechanism/007-S8-ZIlly1gi5bpc7h03j30u00xkb29.jpg)
 
 上图展示的类加载器之间的这种层次关系，称为类加载器的双亲委派模型（Parents Delegation Model）。 双亲委派模型要求除了顶层的启动类加载器外，其余的类加载器都应当有自己的父类加载器。 这里类加载器之间的父子关系一般不会以继承（Inheritance）的关系来实现，而是都使用组合（Composition）关系来复用父加载器的代码。
 
@@ -199,7 +199,7 @@ public class Test2 {
 - 系统类防止内存中出现多份同样的字节码
 - 保证Java程序安全稳定运行
 
-![](https://i.ibb.co/4sxh4jM/007-S8-ZIlly1gi5brab180j31iy0m87qk.jpg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-01-05-jvm-class-loading-mechanism/007-S8-ZIlly1gi5brab180j31iy0m87qk.jpg)
 
 双亲委派代码实现
 
