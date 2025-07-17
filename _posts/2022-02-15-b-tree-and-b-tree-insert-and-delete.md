@@ -136,7 +136,7 @@ B树也称B-树,它是一颗多路平衡查找树。我们描述一颗B树时需
   <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232921679-618565224.png)<br>
   当前结点的关键字个数满足条件，插入结束。
 6. 插入若干数据后
-  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232935105-1001982143.png)<br>
+  <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232926305-812650003.png)<br>
 7. 在上图中插入7，结果如下图所示
   <br>![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-15-b-tree-and-b-tree-insert-and-delete/834468-20180406232935105-1001982143.png)<br>
   当前结点的关键字个数超过4，需要分裂。左结点2个记录，右结点3个记录。分裂后关键字7进入到父结点中，将当前结点的指针指向父结点，结果如下图所示。

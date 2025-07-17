@@ -18,7 +18,7 @@ math: true
 
 那么如何提高搜索的速度呢？很简单，做个索引：
 
-![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-28-skip-list-principle/9788d877-3ddb-46bc-aa35-332db1d559bd.svg)
+![](https://cdn.jsdelivr.net/gh/Optimus-Xs/Blog-Images/2022-02-28-skip-list-principle/linked-list-2.svg)
 
 如上图，我们新创建一个链表，它包含的元素为前一个链表的偶数个元素。这样在搜索一个元素时，我们先在上层链表进行搜索，当元素未找到时再到下层链表中搜索。例如搜索数字 19 时的路径如下图：
 
