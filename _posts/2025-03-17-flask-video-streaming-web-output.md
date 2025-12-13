@@ -25,6 +25,7 @@ tags: [Flask, Python, 流媒体]
 - `index.html` (Web 客户端)
 
     ```html
+    {% raw %}
     <html>
       <head>
         <title>Video Streaming Demonstration</title>
@@ -34,6 +35,7 @@ tags: [Flask, Python, 流媒体]
         <img src="{{ url_for('video_feed') }}" height="500">
       </body>
     </html>
+    {% endraw %}
     ```
 
 - `app.py` (Flask 服务器端)
